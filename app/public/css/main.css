@@ -1,0 +1,38 @@
+/* Make the page take the full height of the viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background: #f4f4f4;
+    color: #333;
+}
+
+/* Main content should expand to push the footer down */
+main {
+    flex: 1; /* This makes the content area grow and push the footer down */
+    margin: 20px 20%;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.horizontal-margins {
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+/* Links */
+a {
+    color: #0077cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

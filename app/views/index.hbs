@@ -1,0 +1,10 @@
+<h2>Welcome to My Blog</h2>
+<p>Here are my latest posts:</p>
+
+<ul>
+    {{#each posts}}
+        <li>
+            <a href="{{url}}">{{title}}</a>
+        </li>
+    {{/each}}
+</ul>

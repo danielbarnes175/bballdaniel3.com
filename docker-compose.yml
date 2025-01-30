@@ -1,0 +1,9 @@
+services:
+  bballdaniel3:
+    build: .
+    ports:
+      - "1234:1234"
+    environment:
+      - NODE_ENV=development
+    command: ["npx", "nodemon", "--legacy-watch", "server.js"]
+    restart: unless-stopped

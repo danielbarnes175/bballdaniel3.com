@@ -1,0 +1,9 @@
+/* Blog post styles */
+.post-content h2 {
+    color: #222;
+}
+
+.post-content p {
+    font-size: 1.1em;
+}
+
