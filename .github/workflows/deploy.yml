@@ -3,20 +3,29 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main  # Change this if your default branch is different
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
       - name: SSH into Server and Deploy
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /path/to/your/project
+            cd ~/applications/bballdaniel3.com
+            git fetch origin main
             git pull origin main
             docker-compose down
-            docker-compose up --build -d
+            npm run build
+            npm run start
