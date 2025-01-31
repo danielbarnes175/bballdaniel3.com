@@ -1,5 +1,6 @@
 /* Make the page take the full height of the viewport */
 html, body {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -15,7 +16,6 @@ html, body {
 /* Main content should expand to push the footer down */
 main {
     flex: 1; /* This makes the content area grow and push the footer down */
-    margin: 20px 20%;
     padding: 20px;
     background: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -23,8 +23,8 @@ main {
 }
 
 .horizontal-margins {
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 /* Links */
@@ -36,3 +36,17 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+@media only screen and (max-width: 1250px) {
+    .horizontal-margins {
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .horizontal-margins {
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+  }
