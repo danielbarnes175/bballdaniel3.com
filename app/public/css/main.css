@@ -27,6 +27,12 @@ main {
     margin-right: 15%;
 }
 
+.jumbo-img {
+    max-width: 70%;
+    max-height: 100vh;
+    margin: auto;
+}
+
 /* Links */
 a {
     color: #0077cc;
@@ -48,5 +54,11 @@ a:hover {
     .horizontal-margins {
         margin-left: 5%;
         margin-right: 5%;
+    }
+
+    .jumbo-img {
+        max-width: 100%;
+        max-height: 100vh;
+        margin: auto;
     }
   }
