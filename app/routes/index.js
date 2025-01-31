@@ -4,11 +4,13 @@ const controller = require('../controllers/index');
 
 module.exports = function(app) {
     app.route('/')
-        .get(controller.index);
+        .get(controller.home);
     app.route('/about')
         .get(controller.about);
-    app.route('/blog/:post')
+    app.route('/blog')
         .get(controller.blog);
+    app.route('/blog/:post')
+        .get(controller.post);
     app.route('/tag/:tag')
         .get(controller.tag);
     app.route('/privacy')

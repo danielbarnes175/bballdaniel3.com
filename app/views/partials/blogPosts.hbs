@@ -1,0 +1,22 @@
+<h4>Filter by tag:</h4>
+<div class="tag-cloud">
+    {{#each tags}}
+        <a href="/tag/{{@key}}" class="tag {{#ifeq @key ../tag}}active{{/ifeq}}">
+            {{@key}} ({{this}})
+        </a>
+    {{/each}}
+</div>
+
+<h4>Posts</h4>
+<ul class="blog-list">
+    {{#each posts}}
+      <a href="{{url}}" class="blog-link">
+        <li class="blog-post">
+            <strong>{{title}}</strong>
+            <small>({{formattedDate}})</small>
+            <p>{{excerpt}}</p>
+            <span class="read-more">Read more</span>
+        </li>
+      </a>
+    {{/each}}
+</ul>
