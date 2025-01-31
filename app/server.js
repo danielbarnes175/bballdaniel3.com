@@ -4,6 +4,8 @@ const fs = require("fs").promises;
 const path = require("path");
 const marked = require("marked");
 const matter = require("gray-matter");
+const Handlebars = require("handlebars");
+const helpers = require('./helpers/handlebars.js');
 
 const app = express();
 
@@ -15,9 +17,13 @@ app.engine("hbs", engine({
     defaultLayout: "main",
     layoutsDir: path.join(__dirname, "views", "layouts"),
     partialsDir: path.join(__dirname, "views", "partials"),
-    helpers: require('./helpers/handlebars.js')
+    helpers
 }));
 app.engine("hbs", engine({ extname: ".hbs" }));
+
+Object.keys(helpers).forEach((key) => {
+    Handlebars.registerHelper(key, helpers[key]);
+});
 
 app.set("view engine", "hbs");
 app.set("views", viewsPath);

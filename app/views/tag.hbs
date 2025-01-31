@@ -2,7 +2,7 @@
 
 <div class="tag-cloud">
     {{#each tags}}
-        <a href="/tag/{{@key}}" class="tag {{#if (eq @key ../tag)}}active{{/if}}">
+        <a href="/tag/{{@key}}" class="tag {{#ifeq @key ../tag}}active{{/ifeq}}">
             {{@key}} ({{this}})
         </a>
     {{/each}}
