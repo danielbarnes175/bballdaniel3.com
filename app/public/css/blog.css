@@ -7,3 +7,33 @@
     font-size: 1.1em;
 }
 
+/* Style for the tag cloud */
+.tag-cloud {
+    margin-top: 20px;
+}
+
+.tag {
+    display: inline-block;
+    background: #0077cc;
+    color: white;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.tag:hover {
+    background: #005fa3;
+}
+
+/* Highlight the active tag */
+.active-tag {
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.tag.active {
+    background: #d9534f;
+    font-weight: bold;
+}

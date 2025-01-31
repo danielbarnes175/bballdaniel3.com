@@ -1,10 +1,18 @@
 <h2>Welcome to My Blog</h2>
-<p>Here are my latest posts:</p>
 
+<h4>Filter by tag:</h4>
+<div class="tag-cloud">
+    {{#each tags}}
+        <a href="/tag/{{@key}}" class="tag">{{@key}} ({{this}})</a>
+    {{/each}}
+</div>
+
+<h4>Posts</h4>
 <ul>
     {{#each posts}}
         <li>
             <a href="{{url}}">{{title}}</a>
+            <small>({{formattedDate}})</small>
         </li>
     {{/each}}
 </ul>

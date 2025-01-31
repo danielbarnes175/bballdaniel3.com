@@ -1,5 +1,18 @@
-<h2>Blog Post</h2>
+<small>
+    <p>
+        <strong>Published on:</strong> {{date}}</p>
+        {{#if tags}}
+            <strong>Tags:</strong>
+                {{#each tags}}
+                    <a href="/tag/{{this}}" class="tag">{{this}}</a>
+                {{/each}}
+            
+        {{/if}}
+    </p>
+</small>
+
 <div class="post-content">
     {{{content}}}
 </div>
-<a href="/">Back to Home</a>
+
+<p><a href="/">Back to Home</a></p>

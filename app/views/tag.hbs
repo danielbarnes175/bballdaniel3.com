@@ -1,0 +1,17 @@
+<h2>Posts tagged: {{tag}}</h2>
+
+<div class="tag-cloud">
+    {{#each tags}}
+        <a href="/tag/{{@key}}" class="tag {{#if (eq @key ../tag)}}active{{/if}}">
+            {{@key}} ({{this}})
+        </a>
+    {{/each}}
+</div>
+
+<ul>
+    {{#each posts}}
+        <li><a href="{{url}}">{{title}}</a></li>
+    {{/each}}
+</ul>
+
+<a href="/">Back to Home</a>
