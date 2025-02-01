@@ -1,25 +1,53 @@
-/* Make the page take the full height of the viewport */
 html, body {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'charter', Roboto, Helvetica, Arial, sans-serif;
     height: 100%;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    font-family: Arial, sans-serif;
     line-height: 1.6;
     background: #f4f4f4;
     color: #333;
 }
 
-/* Main content should expand to push the footer down */
+@font-face {
+    font-family: charter;
+    font-style: normal;
+    font-weight: normal;
+    font-stretch: normal;
+    src: url('../fonts/charter_regular.woff2') format('woff2');
+}
+    
+@font-face {
+    font-family: charter;
+    font-style: italic;
+    font-weight: normal;
+    font-stretch: normal;
+    src: url('../fonts/charter_italic.woff2') format('woff2');
+}
+    
+@font-face {
+    font-family: charter;
+    font-style: normal;
+    font-weight: bold;
+    font-stretch: normal;
+    src: url('../fonts/charter_bold.woff2') format('woff2');
+}
+    
+@font-face {
+    font-family: charter;
+    font-style: italic;
+    font-weight: bold;
+    font-stretch: normal;
+    src: url('../fonts/charter_bold_italic.woff2') format('woff2');
+}
+
+/* Main content */
 main {
-    flex: 1; /* This makes the content area grow and push the footer down */
+    flex: 1;
     padding: 20px;
     background: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
 }
 
 .horizontal-margins {
@@ -50,10 +78,10 @@ a:hover {
     }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 750px) {
     .horizontal-margins {
-        margin-left: 5%;
-        margin-right: 5%;
+        margin-left: 3%;
+        margin-right: 3%;
     }
 
     .jumbo-img {
