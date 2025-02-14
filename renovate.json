@@ -13,7 +13,7 @@
     "group:recommended",
     "helpers:disableTypesNodeMajor",
     ":prHourlyLimitNone",
-    "docker:enableMajor",
+    "docker:enableMajor"
   ],
   "commitMessagePrefix": "Renovate: ",
   "enabledManagers": ["npm"],
