@@ -1,6 +1,40 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
-  ]
+    ":dependencyDashboard",
+    ":separateMajorReleases",
+    ":combinePatchMinorReleases",
+    ":ignoreUnstable",
+    ":prImmediately",
+    ":semanticPrefixFixDepsChoreOthers",
+    ":updateNotScheduled",
+    ":automergeDisabled",
+    ":ignoreModulesAndTests",
+    "group:monorepos",
+    "group:recommended",
+    "helpers:disableTypesNodeMajor",
+    ":prHourlyLimitNone",
+    "docker:enableMajor",
+    ":disableMajorUpdates"
+  ],
+  "commitMessagePrefix": "Renovate: ",
+  "enabledManagers": ["npm"],
+  "labels": ["renovate"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "minor and patch packages"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "groupName": "major packages"
+    },
+    {
+      "matchUpdateTypes": ["patch", "minor", "major"],
+      "groupName": "empty pr",
+      "postUpgradeTasks": {
+        "commands": ["git reset --hard HEAD"],
+        "fileFilters": ["*"]
+      },
+    }
 }
