@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     ":dependencyDashboard",
-    ":separateMajorReleases",
     ":combinePatchMinorReleases",
     ":ignoreUnstable",
     ":prImmediately",
@@ -15,7 +14,6 @@
     "helpers:disableTypesNodeMajor",
     ":prHourlyLimitNone",
     "docker:enableMajor",
-    ":disableMajorUpdates"
   ],
   "commitMessagePrefix": "Renovate: ",
   "enabledManagers": ["npm"],
