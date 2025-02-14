@@ -35,7 +35,7 @@
       "postUpgradeTasks": {
         "commands": ["git reset --hard HEAD"],
         "fileFilters": ["*"]
-      },
+      }
     }
   ]
 }
