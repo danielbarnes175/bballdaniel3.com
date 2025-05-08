@@ -2,6 +2,7 @@
 .blog-background {
     /* background: #f4f4f4; */
     background: white;
+    padding: 10px;
 }
 
 .post-content h2 {

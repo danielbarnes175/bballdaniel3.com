@@ -13,6 +13,7 @@ html, body {
 
 .main-background {
     background: white;
+    background-image: linear-gradient(#B1F8F2, #3D7068);
 }
 
 @font-face {
@@ -51,12 +52,17 @@ html, body {
 main {
     flex: 1;
     padding: 20px;
-    background: white;
+    background: none;
 }
 
 .horizontal-margins {
     margin-left: 15%;
     margin-right: 15%;
+}
+
+.horizontal-margins-lg {
+    margin-left: 30%;
+    margin-right: 30%;
 }
 
 .jumbo-img {
