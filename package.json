@@ -8,7 +8,7 @@
     "build": "docker-compose build",
     "start": "docker-compose up -d",
     "restart": "docker-compose down && docker-compose up --build -d",
-    "nodemon": "nodemon -e \"*\" app/server.js"
+    "nodemon": "nodemon --ignore 'app/data/*' -e \"*\" app/server.js"
   },
   "author": "",
   "license": "ISC",
