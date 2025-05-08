@@ -5,10 +5,12 @@ const path = require("path");
 const marked = require("marked");
 const matter = require("gray-matter");
 const Handlebars = require("handlebars");
+const dotenv = require("dotenv");
 const helpers = require('./helpers/handlebars.js');
 const routes = require("./routes/index");
 
 const app = express();
+dotenv.config();
 
 const viewsPath = path.join(__dirname, "views");
 const postsPath = path.join(viewsPath, "posts");

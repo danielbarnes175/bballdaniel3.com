@@ -2,6 +2,8 @@
 const fs = require("fs");
 const path = require("path");
 const sanitizeHtml = require("sanitize-html");
+const { nameToColor } = require("../helpers/nameToColor.js");
+const { sendToDiscord } = require("../helpers/sendToDiscord.js");
 
 const GUESTBOOK_FILE = path.join(__dirname, "..", "data", "guestbook.json");
 
@@ -40,23 +42,17 @@ exports.submitGuestbookEntry = (req, res) => {
     }
 
     const entries = getGuestbookEntries();
-    entries.unshift({
+    const newEntry = {
         name,
         message,
         date: new Date().toLocaleString()
-    });
+    }
+
+    sendToDiscord(newEntry);
+    entries.unshift(newEntry);
 
     saveGuestbookEntries(entries);
     res.redirect("/guestbook");
 };
-
-function nameToColor(name) {
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const hue = Math.abs(hash) % 360;
-    return `hsl(${hue}, 60%, 55%)`; // Pastel-ish color
-  }
   
 exports.getGuestbookEntries = getGuestbookEntries;
