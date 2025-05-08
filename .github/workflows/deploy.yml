@@ -27,6 +27,7 @@ jobs:
             ssh-add ~/.ssh/id_github
             cd ~/applications/bballdaniel3.com
             git fetch origin main
+            git reset --hard origin/main
             git pull origin main
             docker-compose down
             npm run build
