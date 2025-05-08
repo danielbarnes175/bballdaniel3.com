@@ -10,7 +10,7 @@ const helpers = require('./helpers/handlebars.js');
 const routes = require("./routes/index");
 
 const app = express();
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const viewsPath = path.join(__dirname, "views");
 const postsPath = path.join(viewsPath, "posts");
