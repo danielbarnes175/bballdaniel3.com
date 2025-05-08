@@ -7,8 +7,12 @@ html, body {
     display: flex;
     flex-direction: column;
     line-height: 1.4;
-    background: #f4f4f4;
     color: #333;
+}
+
+
+.main-background {
+    background: white;
 }
 
 @font-face {

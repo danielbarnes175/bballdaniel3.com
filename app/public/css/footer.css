@@ -5,3 +5,8 @@ footer {
     margin: 0;
     margin-top: auto; /* Push footer to the bottom */
 }
+
+.footer-linebreak {
+    margin: 20px 35% 0 35%;
+    border-bottom: 2px solid #eeeeee;
+}

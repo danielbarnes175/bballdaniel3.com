@@ -1,4 +1,9 @@
 /* Blog post styles */
+.blog-background {
+    /* background: #f4f4f4; */
+    background: white;
+}
+
 .post-content h2 {
     color: #222;
 }
