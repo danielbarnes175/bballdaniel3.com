@@ -1,23 +1,27 @@
-<h1>Guestbook</h1>
 
-<form action="/guestbook" method="POST" data-swup-form>
-<label>Name:</label><br>
-  <input type="text" name="name" required><br><br>
 
-  <label>Message:</label><br>
-  <textarea name="message" required></textarea><br><br>
+<center>
+    <h1>Guestbook</h1>
+    <p>Welcome to my guestbook. Feel free to sign it!</p>
+    <form action="/guestbook" method="POST" data-swup-form>
+    <label class="guestbook-label"><h3>Name</h3></label><br>
+    <input class="guestbook-name-input" type="text" name="name" required><br><br>
 
-  <button type="submit">Submit</button>
-</form>
+    <label class="guestbook-label"><h3>Message</h3></label><br>
+    <textarea class="guestbook-message-input" name="message" required></textarea><br><br>
+
+    <button class="guestbook-submit-button" type="submit">Sign the Guestbook</button>
+    </form>
+</center>
 
 <hr>
 
-<h2>Messages</h2>
+<h2>Guests</h2>
 {{#if entries.length}}
-  <ul>
+  <ul clas="guestbook-card-list">
     {{#each entries}}
-      <li>
-        <strong>{{name}}</strong> ({{date}}):<br>
+      <li class="guestbook-comment-card">
+        Signed by <strong style="color: {{color}}">{{name}}</strong> ({{date}}):<br>
         {{message}}
       </li>
     {{/each}}

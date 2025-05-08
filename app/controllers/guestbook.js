@@ -8,7 +8,13 @@ const GUESTBOOK_FILE = path.join(__dirname, "..", "data", "guestbook.json");
 // Ensure the file exists
 function getGuestbookEntries() {
     try {
-        return JSON.parse(fs.readFileSync(GUESTBOOK_FILE, "utf8"));
+        const rawEntries = JSON.parse(fs.readFileSync(GUESTBOOK_FILE, "utf8"));
+        const entries = rawEntries.map(entry => ({
+            ...entry,
+            color: nameToColor(entry.name)
+        }));
+
+        return entries;
     } catch {
         return [];
     }
@@ -24,8 +30,6 @@ function sanitize(input, maxLength) {
         allowedAttributes: {}
     });
 }
-
-exports.getGuestbookEntries = getGuestbookEntries;
 
 exports.submitGuestbookEntry = (req, res) => {
     const name = sanitize(req.body.name || "", 100);
@@ -45,3 +49,14 @@ exports.submitGuestbookEntry = (req, res) => {
     saveGuestbookEntries(entries);
     res.redirect("/guestbook");
 };
+
+function nameToColor(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 60%, 55%)`; // Pastel-ish color
+  }
+  
+exports.getGuestbookEntries = getGuestbookEntries;

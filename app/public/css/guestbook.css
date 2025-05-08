@@ -1,0 +1,59 @@
+/* .guestbook-comment-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
+
+.guestbook-label h3 {
+    margin: 10px 0 0 0;
+}
+
+.guestbook-name-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.guestbook-message-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 50%;
+    height: 100px;
+}
+
+.guestbook-submit-button {
+    background-color: #54855d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.guestbook-submit-button:hover {
+    background-color: #27402b;
+}
+
+.guestbook-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    /* remove bullet */
+    list-style: none;
+  }
+  
+.guestbook-comment-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 1em 0;
+    list-style: none;
+}
+  
+.card:hover {
+    transform: translateY(-2px);
+}
