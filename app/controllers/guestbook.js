@@ -7,7 +7,6 @@ const GUESTBOOK_FILE = path.join(__dirname, "..", "data", "guestbook.json");
 
 // Ensure the file exists
 function getGuestbookEntries() {
-    console.log("GETTING GUESTBOOK");
     try {
         return JSON.parse(fs.readFileSync(GUESTBOOK_FILE, "utf8"));
     } catch {
@@ -44,5 +43,5 @@ exports.submitGuestbookEntry = (req, res) => {
     });
 
     saveGuestbookEntries(entries);
-    res.status(200).json({ redirect: "/guestbook" });
+    res.redirect("/guestbook");
 };
