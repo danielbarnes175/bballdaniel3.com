@@ -30,6 +30,8 @@ app.set("view engine", "hbs");
 app.set("views", viewsPath);
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json()); // For JSON body parsing
+app.use(express.urlencoded({ extended: true }));
 
 routes(app);
 

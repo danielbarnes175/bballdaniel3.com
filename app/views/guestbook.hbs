@@ -1,0 +1,27 @@
+<h1>Guestbook</h1>
+
+<form id="guestbook-form">
+<label>Name:</label><br>
+  <input type="text" name="name" required><br><br>
+
+  <label>Message:</label><br>
+  <textarea name="message" required></textarea><br><br>
+
+  <button type="submit">Submit</button>
+</form>
+
+<hr>
+
+<h2>Messages</h2>
+{{#if entries.length}}
+  <ul>
+    {{#each entries}}
+      <li>
+        <strong>{{name}}</strong> ({{date}}):<br>
+        {{message}}
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No entries yet.</p>
+{{/if}}

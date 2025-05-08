@@ -18,6 +18,7 @@
     "fs": "^0.0.1-security",
     "gray-matter": "^4.0.3",
     "marked": "^15.0.6",
+    "sanitize-html": "^2.16.0",
     "swup": "^4.8.1"
   },
   "devDependencies": {

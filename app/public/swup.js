@@ -6,3 +6,4 @@ const options = {
 }
 
 const swup = new Swup(options);
+window.swup = swup;
