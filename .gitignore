@@ -1,4 +1,4 @@
 node_modules
 .env
 .vscode
-/app/data/guestbook.json
+app/data/guestbook.json
