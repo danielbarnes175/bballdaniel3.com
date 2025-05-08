@@ -82,14 +82,14 @@ a:hover {
 }
 
 @media only screen and (max-width: 1250px) {
-    .horizontal-margins {
+    .horizontal-margins, .horizontal-margins-lg {
         margin-left: 10%;
         margin-right: 10%;
     }
 }
 
 @media only screen and (max-width: 750px) {
-    .horizontal-margins {
+    .horizontal-margins, .horizontal-margins-lg {
         margin-left: 3%;
         margin-right: 3%;
     }
