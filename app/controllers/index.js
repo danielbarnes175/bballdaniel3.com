@@ -11,4 +11,6 @@ module.exports = {
     privacy: (req, res) => res.render("privacy"),
     guestbook: (req, res) => res.render("guestbook", { entries: guestbookController.getGuestbookEntries() }),
     submitGuestbookEntry: guestbookController.submitGuestbookEntry,
+    now: (req, res) => res.render("now"),
+    games: (req, res) => res.render("games"),
 };
