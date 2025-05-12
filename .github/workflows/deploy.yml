@@ -16,6 +16,11 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
+      - name: Generate Bug Report
+        run: |
+          echo "Generating bug report..."
+          tailscale bugreport
+
       - name: SSH into Server and Deploy
         uses: appleboy/ssh-action@v1.2.0
         with:
