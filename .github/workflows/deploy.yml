@@ -15,8 +15,6 @@ jobs:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
-        env:
-          TS_DEBUG_FIREWALL_MODE: "nftables"
 
       - name: SSH into Server and Deploy
         uses: appleboy/ssh-action@v1.2.0
