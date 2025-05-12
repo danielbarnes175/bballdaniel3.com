@@ -5,5 +5,7 @@ services:
       - "1234:1234"
     environment:
       - NODE_ENV=development
+    volumes:
+      - ./app/data:/app/data
     command: ["npx", "nodemon", "--legacy-watch", "server.js"]
     restart: unless-stopped
