@@ -16,6 +16,15 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
+      - name: Ping server to verify Tailscale connection
+        run: |
+          echo "Pinging ${{ secrets.SERVER_IP }}"
+          tailscale status
+          ping -c 4 ${{ secrets.SERVER_IP }} || {
+            echo "Failed to reach the server at ${{ secrets.SERVER_IP }}"
+            exit 1
+          }
+
       - name: SSH into Server and Deploy
         uses: appleboy/ssh-action@v1.2.0
         with:
