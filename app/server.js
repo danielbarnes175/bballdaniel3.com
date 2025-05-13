@@ -6,6 +6,7 @@ const marked = require("marked");
 const matter = require("gray-matter");
 const Handlebars = require("handlebars");
 const dotenv = require("dotenv");
+const helmet = require("helmet");
 const helpers = require('./helpers/handlebars.js');
 const routes = require("./routes/index");
 
@@ -14,6 +15,8 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const viewsPath = path.join(__dirname, "views");
 const postsPath = path.join(viewsPath, "posts");
+
+app.use(helmet());
 
 app.engine("hbs", engine({
     extname: ".hbs",

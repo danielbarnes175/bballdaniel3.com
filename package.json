@@ -19,6 +19,7 @@
     "express-handlebars": "^8.0.1",
     "fs": "^0.0.1-security",
     "gray-matter": "^4.0.3",
+    "helmet": "^8.1.0",
     "marked": "^15.0.6",
     "sanitize-html": "^2.16.0",
     "swup": "^4.8.1"
