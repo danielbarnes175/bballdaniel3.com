@@ -1,31 +1,35 @@
-
-
 <center>
-    <h1>Guestbook</h1>
-    <p>Welcome to my guestbook. Feel free to sign it!</p>
-    <form action="/guestbook" method="POST" data-swup-form>
-    <label class="guestbook-label"><h3>Name</h3></label><br>
+  <h1>Guestbook</h1>
+  <p>Welcome to my guestbook. Feel free to sign it!</p>
+  <form action="/guestbook" method="POST" data-swup-form>
+    <label class="guestbook-label">
+      <h3>Name</h3>
+    </label><br>
     <input class="guestbook-name-input" type="text" name="name" required><br><br>
 
-    <label class="guestbook-label"><h3>Message</h3></label><br>
+    <label class="guestbook-label">
+      <h3>Message</h3>
+    </label><br>
     <textarea class="guestbook-message-input" name="message" required></textarea><br><br>
 
-    <button class="guestbook-submit-button" type="submit">Sign the Guestbook</button>
-    </form>
+    <div class="g-recaptcha" data-sitekey="6Le7JK0bAAAAADV3P6ZDDOXJHJImPrefIVghEs_7" data-bind="recaptcha-submit"
+      data-callback="submitForm"></div>
+    <button class="guestbook-submit-button" type="submit" id="recaptcha-submit">Sign the Guestbook</button>
+  </form>
 </center>
 
 <hr>
 
 <h2>Guests</h2>
 {{#if entries.length}}
-  <ul clas="guestbook-card-list">
-    {{#each entries}}
-      <li class="guestbook-comment-card">
-        Signed by <strong style="color: {{color}}">{{name}}</strong> ({{date}}):<br>
-        {{message}}
-      </li>
-    {{/each}}
-  </ul>
+<ul clas="guestbook-card-list">
+  {{#each entries}}
+  <li class="guestbook-comment-card">
+    Signed by <strong style="color: {{color}}">{{name}}</strong> ({{date}}):<br>
+    {{message}}
+  </li>
+  {{/each}}
+</ul>
 {{else}}
-  <p>No entries yet.</p>
+<p>No entries yet.</p>
 {{/if}}
