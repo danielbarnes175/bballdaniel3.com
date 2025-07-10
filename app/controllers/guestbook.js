@@ -34,6 +34,10 @@ function sanitize(input, maxLength) {
 }
 
 exports.submitGuestbookEntry = (req, res) => {
+    res.redirect("/guestbook");
+
+    return;
+
     const name = sanitize(req.body.name || "", 100);
     const message = sanitize(req.body.message || "", 1000);
 
@@ -54,5 +58,5 @@ exports.submitGuestbookEntry = (req, res) => {
     saveGuestbookEntries(entries);
     res.redirect("/guestbook");
 };
-  
+
 exports.getGuestbookEntries = getGuestbookEntries;
