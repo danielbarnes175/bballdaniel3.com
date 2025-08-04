@@ -9,6 +9,7 @@ module.exports = {
         return options.inverse(this);
     },
     add: function (a, b) {
+        console.log("Adding", a, b);
         return a + b;
     },
 }

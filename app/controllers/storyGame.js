@@ -68,7 +68,7 @@ module.exports = {
         if (room.state === "active") {
             return res.render("storyGame/wait", {
                 code,
-                turn: room.currentTurn,
+                turn: room.currentTurn + 1,
                 username,
                 message: "Game in progress..."
             });
@@ -141,7 +141,7 @@ module.exports = {
         res.render("storyGame/write", {
             code,
             turn,
-            storyIndex,
+            storyIndex: storyIndex + 1,
             username,
             time: room.settings.turnTime,
             totalTurns: room.players.length,
