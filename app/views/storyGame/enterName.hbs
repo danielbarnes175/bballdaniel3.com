@@ -1,0 +1,8 @@
+<h1>Join Game</h1>
+<p>Please enter your name to join this game:</p>
+
+<form action="/games/story/{{code}}" method="GET">
+    <input type="hidden" name="code" value="{{code}}">
+    <input type="text" name="username" placeholder="Your name" required>
+    <button type="submit">Join Game</button>
+</form>

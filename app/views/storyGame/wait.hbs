@@ -1,0 +1,24 @@
+<h1>{{message}}</h1>
+
+<p>Room Code: <strong>{{code}}</strong></p>
+<p>You are on turn <strong>{{turn}}</strong></p>
+
+<p>Waiting for other players to finish writing...</p>
+<p>You will be redirected automatically when the next round begins.</p>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const code = "{{code}}";
+    socket.emit('join-room', code);
+
+    socket.on("start-turn", ({ turn, endsIn }) => {
+        const username = "{{username}}";
+        window.location.href = `/games/story/${code}/write?turn=${turn}&username=${encodeURIComponent(username)}`;
+    });
+
+    socket.on("game-finished", () => {
+        const username = "{{username}}";
+        window.location.href = `/games/story/${code}/results?username=${encodeURIComponent(username)}`;
+    });
+</script>

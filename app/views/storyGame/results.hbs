@@ -1,0 +1,11 @@
+<h1>Final Stories</h1>
+
+{{#each stories}}
+<div class="story">
+    <h2>Story #{{@index}}</h2>
+    <p><strong>Contributors:</strong> {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+    <pre style="background: #f4f4f4; padding: 1em;">{{this.content}}</pre>
+</div>
+{{/each}}
+
+<a href="/games">Back to Games</a>

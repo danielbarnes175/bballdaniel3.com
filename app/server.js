@@ -9,14 +9,28 @@ const dotenv = require("dotenv");
 const helmet = require("helmet");
 const helpers = require('./helpers/handlebars.js');
 const routes = require("./routes/index");
+const http = require('http');
+const socketio = require('socket.io');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const viewsPath = path.join(__dirname, "views");
 const postsPath = path.join(viewsPath, "posts");
 
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.socket.io"],
+            connectSrc: ["'self'", "ws:", "wss:"], // Allow WebSocket connections
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:"],
+        }
+    }
+}));
 
 app.engine("hbs", engine({
     extname: ".hbs",
@@ -33,6 +47,16 @@ Object.keys(helpers).forEach((key) => {
 
 app.set("view engine", "hbs");
 app.set("views", viewsPath);
+app.set('io', io);
+
+io.on('connection', (socket) => {
+    socket.on('join-room', (roomCode) => {
+        socket.join(roomCode);
+    });
+
+    socket.on('disconnect', () => {
+    });
+});
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json()); // For JSON body parsing
@@ -40,4 +64,4 @@ app.use(express.urlencoded({ extended: true }));
 
 routes(app);
 
-app.listen(1234, () => console.log("Server running on port 1234"));
+server.listen(1234, () => console.log("Server running on port 1234"));

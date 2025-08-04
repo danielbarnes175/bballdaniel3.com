@@ -1,0 +1,66 @@
+<h1>Story Game Lobby</h1>
+
+<p>Room Code: <strong>{{code}}</strong></p>
+<h3>Invite Players</h3>
+<p>
+    Share this link to invite others:
+    <input id="lobby-link" type="text" value="{{{joinUrl}}}" readonly style="width: 100%; max-width: 500px;">
+    <button onclick="copyLobbyUrl()">Copy</button>
+</p>
+
+<h2>Players</h2>
+<ul id="player-list">
+    {{#each room.players}}
+    <li>{{this.name}}</li>
+    {{/each}}
+</ul>
+
+{{#if (eq room.host username)}}
+<form id="start-form" action="/games/story/{{code}}/start" method="POST">
+    <label>Turn Time (seconds):
+        <input type="number" name="turnTime" value="{{room.settings.turnTime}}" min="10" />
+    </label>
+    <button type="submit">Start Game</button>
+</form>
+{{else}}
+<p>Waiting for <strong>{{room.host}}</strong> to start the game...</p>
+{{/if}}
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const code = "{{code}}";
+    const username = "{{username}}";
+    socket.emit('join-room', code);
+
+    socket.on('player-joined', (players) => {
+        const list = document.getElementById('player-list');
+        list.innerHTML = '';
+        players.forEach(p => {
+            const li = document.createElement('li');
+            li.textContent = p.name;
+            list.appendChild(li);
+        });
+    });
+
+    socket.on('game-started', () => {
+        window.location.href = `/games/story/${code}/write?turn=0&username=${encodeURIComponent(username)}`;
+    });
+
+    socket.on("start-turn", ({ turn, endsIn }) => {
+        window.location.href = `/games/story/${code}/write?turn=${turn}&username=${encodeURIComponent(username)}`;
+    });
+
+    socket.on("game-finished", () => {
+        window.location.href = `/games/story/${code}/results?username=${encodeURIComponent(username)}`;
+    });
+</script>
+<script>
+    function copyLobbyUrl() {
+        const input = document.getElementById("lobby-link");
+        input.select();
+        input.setSelectionRange(0, 99999); // mobile support
+        document.execCommand("copy");
+        alert("Lobby link copied!");
+    }
+</script>

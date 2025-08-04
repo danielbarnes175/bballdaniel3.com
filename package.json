@@ -22,6 +22,7 @@
     "helmet": "^8.1.0",
     "marked": "^15.0.6",
     "sanitize-html": "^2.16.0",
+    "socket.io": "^4.8.1",
     "swup": "^4.8.1"
   },
   "devDependencies": {

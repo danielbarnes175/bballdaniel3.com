@@ -1,8 +1,9 @@
 'use strict'
 
 const controller = require('../controllers/index');
+const gameController = require('../controllers/storyGame');
 
-module.exports = function(app) {
+module.exports = function (app) {
     app.route('/')
         .get(controller.home);
     app.route('/about')
@@ -22,6 +23,22 @@ module.exports = function(app) {
         .get(controller.tag);
     app.route('/privacy')
         .get(controller.privacy);
+
+    app.route('/games/story/create')
+        .get(gameController.createRoom);
+
+    app.route('/games/story/:code')
+        .get(gameController.joinRoom);
+
+    app.route('/games/story/:code/start')
+        .post(gameController.startGame);
+
+    app.route('/games/story/:code/write')
+        .get(gameController.writeTurn)
+        .post(gameController.submitTurn);
+
+    app.route('/games/story/:code/results')
+        .get(gameController.results);
 
 
 
