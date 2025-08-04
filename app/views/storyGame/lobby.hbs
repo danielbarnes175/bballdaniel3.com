@@ -5,7 +5,6 @@
 <p>
     Share this link to invite others:
     <input id="lobby-link" type="text" value="{{{joinUrl}}}" readonly style="width: 100%; max-width: 500px;">
-    <button onclick="copyLobbyUrl()">Copy</button>
 </p>
 
 <h2>Players</h2>
@@ -54,13 +53,4 @@
     socket.on("game-finished", () => {
         window.location.href = `/games/story/${code}/results?username=${encodeURIComponent(username)}`;
     });
-</script>
-<script>
-    function copyLobbyUrl() {
-        const input = document.getElementById("lobby-link");
-        input.select();
-        input.setSelectionRange(0, 99999); // mobile support
-        document.execCommand("copy");
-        alert("Lobby link copied!");
-    }
 </script>

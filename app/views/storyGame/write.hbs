@@ -1,7 +1,7 @@
 <h1>Write Your Part</h1>
 
 <p><strong>Turn {{turn}}</strong> of {{totalTurns}}</p>
-<p>Story #{{add storyIndex 1}}</p>
+<p>Story #{{(add storyIndex 1)}}</p>
 <p>Time Left: <span id="timer">{{timeLeft}}</span> seconds</p>
 
 <form id="writeForm" action="/games/story/{{code}}/write" method="POST">

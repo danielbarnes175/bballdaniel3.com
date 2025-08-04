@@ -92,8 +92,6 @@ module.exports = {
 
         // Init game state
         room.currentTurn = 0;
-        room.turnLength = room.settings.turnTime * 1000;
-        room.turnLength = 10 * 1000; // For testing, set to 10 seconds
         room.bufferTime = 5000;
         room.submissions = {};
         room.stories = room.players.map(p => ({ authors: [], content: "" }));
@@ -103,6 +101,11 @@ module.exports = {
             room.progress[player.name] = 0;
         });
         room.turnStartTime = Date.now();
+
+        const submittedTime = parseInt(req.body.turnTime);
+        const validatedTime = isNaN(submittedTime) || submittedTime < 10 ? 60 : submittedTime;
+        room.settings.turnTime = validatedTime;
+        room.turnLength = room.settings.turnTime * 1000;
 
         setTimeout(() => {
             startTurn(room, code, io);
