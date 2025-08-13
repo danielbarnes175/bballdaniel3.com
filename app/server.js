@@ -1,16 +1,15 @@
+const dotenv = require("dotenv");
 const express = require("express");
 const { engine } = require("express-handlebars");
-const fs = require("fs").promises;
-const path = require("path");
-const marked = require("marked");
-const matter = require("gray-matter");
+const favicon = require('serve-favicon');
 const Handlebars = require("handlebars");
-const dotenv = require("dotenv");
 const helmet = require("helmet");
-const helpers = require('./helpers/handlebars.js');
-const routes = require("./routes/index");
 const http = require('http');
+const path = require("path");
 const socketio = require('socket.io');
+const helpers = require('./helpers/handlebars.js');
+const { logRequest } = require('./services/loggingService.js');
+const routes = require("./routes/index");
 
 const app = express();
 const server = http.createServer(app);
@@ -61,6 +60,16 @@ io.on('connection', (socket) => {
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json()); // For JSON body parsing
 app.use(express.urlencoded({ extended: true }));
+//app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.jpg')));
+
+// Logging middleware
+app.use(function (req, res, next) {
+    res.on("finish", function () {
+        logRequest(req, res);
+    });
+
+    next();
+});
 
 routes(app);
 
