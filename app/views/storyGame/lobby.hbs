@@ -1,8 +1,8 @@
 <h1>Story Game Lobby</h1>
 
-<p>Room Code: <strong>{{code}}</strong></p>
+<p class="story-meta">Room Code: <strong>{{code}}</strong></p>
 <h3>Invite Players</h3>
-<p>
+<p class="story-meta">
     Share this link to invite others:
     <input id="lobby-link" type="text" value="{{{joinUrl}}}" readonly style="width: 100%; max-width: 500px;">
 </p>
@@ -22,7 +22,7 @@
     <button type="submit">Start Game</button>
 </form>
 {{else}}
-<p>Waiting for <strong>{{room.host}}</strong> to start the game...</p>
+<p class="story-meta">Waiting for <strong>{{room.host}}</strong> to start the game...</p>
 {{/if}}
 
 <script src="/socket.io/socket.io.js"></script>

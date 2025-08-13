@@ -7,7 +7,7 @@ header {
     position: relative;
     z-index: 10;
     text-decoration: none;
-    box-shadow: 0 2px 3px rgba(0,0,0,.09);
+    box-shadow: 0 2px 3px var(--border-color);
 }
 
 .navbar-container {
@@ -15,6 +15,7 @@ header {
     flex-direction: row;
     overflow: wrap;
 }
+
 .navbar-list {
     flex: 50%;
     float: right;
@@ -25,7 +26,8 @@ header {
     margin-top: 30px;
 }
 
-.navbar-list li, .navbar-list-logo li {
+.navbar-list li,
+.navbar-list-logo li {
     padding: 0px 20px 10px 30px;
 }
 
@@ -44,11 +46,11 @@ header {
 .navbar a {
     text-decoration: none;
     margin: 0 10px;
-    color: #73777c;
+    color: var(--navbar-link);
 }
 
 .navbar a:hover {
-    color: rgb(35, 37, 37);
+    color: var(--navbar-link-hover);
     padding-bottom: 12px;
     border-bottom: 3px solid rgb(208, 255, 0);
     text-decoration: none;
@@ -56,7 +58,7 @@ header {
 
 
 @media only screen and (max-width: 1250px) {
-    .navbar-container { 
+    .navbar-container {
         flex-direction: column;
     }
 
@@ -69,7 +71,7 @@ header {
     }
 }
 
-@media only screen and (max-width: 400px) { 
+@media only screen and (max-width: 400px) {
     .navbar-list {
         font-size: 70%;
     }

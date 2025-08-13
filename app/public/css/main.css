@@ -8,13 +8,62 @@ body {
     display: flex;
     flex-direction: column;
     line-height: 1.4;
-    color: #333;
+    color: var(--text-color);
+}
+
+/* Color system via CSS variables */
+:root {
+    --bg-gradient-start: #B1F8F2;
+    --bg-gradient-end: #3D7068;
+    --bg-surface: #ffffff;
+    --bg-alt: #f4f4f4;
+    --text-color: #333333;
+    --text-dim: #666666;
+    --link-color: #0036cc;
+    --link-hover: #001e6e;
+    --card-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    --card-hover-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --navbar-link: #73777c;
+    --navbar-link-hover: rgb(35, 37, 37);
+    --footer-text: rgb(190, 190, 190);
+    --footer-hover: #ffffff;
+    --border-color: rgba(0, 0, 0, .09);
+    --tag-bg: #0077cc;
+    --tag-bg-hover: #005fa3;
+    --accent: #d9534f;
+    --guestbook-btn: #54855d;
+    --guestbook-btn-hover: #27402b;
+}
+
+/* Dark theme overrides */
+body.dark-theme {
+    --bg-gradient-start: #0f2027;
+    --bg-gradient-end: #203a43;
+    --bg-surface: #1e1f22;
+    --bg-alt: #2a2c30;
+    --text-color: #e4e6eb;
+    --text-dim: #b0b3b8;
+    --link-color: #6ba8ff;
+    --link-hover: #a9cfff;
+    --card-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+    --card-hover-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+    --navbar-link: #c2c5ca;
+    --navbar-link-hover: #ffffff;
+    --footer-text: #9aa0a6;
+    --footer-hover: #e8eaed;
+    --border-color: rgba(255, 255, 255, 0.15);
+    --tag-bg: #3d6fa6;
+    --tag-bg-hover: #558bc7;
+    --accent: #ff7b72;
+    --guestbook-btn: #336845;
+    --guestbook-btn-hover: #21402c;
 }
 
 
 .main-background {
-    background: white;
-    background-image: linear-gradient(#B1F8F2, #3D7068);
+    background: var(--bg-surface);
+    background-image: linear-gradient(var(--bg-gradient-start), var(--bg-gradient-end));
+    transition: background 0.6s ease, color 0.3s ease;
 }
 
 @font-face {
@@ -74,12 +123,95 @@ main {
 
 /* Links */
 a {
-    color: #0036cc;
+    color: var(--link-color);
     text-decoration: none;
 }
 
 a:hover {
     text-decoration: underline;
+    color: var(--link-hover);
+}
+
+/* Components adapt to variables */
+.blog-post,
+.guestbook-comment-card,
+.game-card,
+.blog-background {
+    background: var(--bg-surface) !important;
+    color: var(--text-color);
+    box-shadow: var(--card-shadow);
+    border-color: var(--border-color);
+}
+
+body.dark-theme .blog-post:hover,
+body.dark-theme .game-card:hover {
+    box-shadow: var(--card-hover-shadow);
+}
+
+footer,
+footer a {
+    color: var(--footer-text);
+}
+
+footer a:hover {
+    color: var(--footer-hover);
+}
+
+.footer-linebreak {
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tag {
+    background: var(--tag-bg);
+}
+
+.tag:hover {
+    background: var(--tag-bg-hover);
+}
+
+.active-tag,
+.tag.active {
+    color: var(--accent);
+    background: transparent;
+}
+
+.guestbook-submit-button {
+    background: var(--guestbook-btn);
+}
+
+.guestbook-submit-button:hover {
+    background: var(--guestbook-btn-hover);
+}
+
+/* Navbar links */
+.navbar a {
+    color: var(--navbar-link);
+}
+
+.navbar a:hover {
+    color: var(--navbar-link-hover);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    cursor: pointer;
+    padding: 4px 10px;
+    font-size: 0.9em;
+    line-height: 1;
+    color: var(--navbar-link);
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.theme-toggle:hover {
+    background: var(--bg-alt);
+    color: var(--navbar-link-hover);
+}
+
+body.dark-theme .theme-toggle {
+    color: var(--navbar-link);
 }
 
 @media only screen and (max-width: 1250px) {

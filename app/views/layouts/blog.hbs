@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +10,13 @@
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/main.css">
+    <script>(function () { try { var t = localStorage.getItem('site-theme'); if (!t) { if (window.matchMedia('(prefers-color-scheme: dark)').matches) { t = 'dark'; } } if (t === 'dark') { document.addEventListener('DOMContentLoaded', function () { document.body.classList.add('dark-theme'); }); } } catch (e) { } })();</script>
     <script defer src="https://unpkg.com/swup@4"></script>
+    <script src="https://unpkg.com/@swup/forms-plugin@3"></script>
     <script defer type="module" src="/swup.js"></script>
+    <script defer src="/js/theme.js"></script>
 </head>
+
 <body class="main-background">
     <header>
         {{> navbar }}
@@ -25,4 +30,5 @@
         {{> footer }}
     </footer>
 </body>
+
 </html>

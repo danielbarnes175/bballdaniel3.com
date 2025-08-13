@@ -1,13 +1,14 @@
 <small>
     <p>
-        <strong>Published on:</strong> {{date}}</p>
-        {{#if tags}}
-            <strong>Tags:</strong>
-                {{#each tags}}
-                    <a href="/tag/{{this}}" class="tag">{{this}}</a>
-                {{/each}}
-            
-        {{/if}}
+        <strong>Published on:</strong> {{date}}
+    </p>
+    {{#if tags}}
+    <strong>Tags:</strong>
+    {{#each tags}}
+    <a href="/tag/{{this}}" class="tag">{{this}}</a>
+    {{/each}}
+
+    {{/if}}
     </p>
 </small>
 
@@ -15,4 +16,4 @@
     {{{content}}}
 </div>
 
-<p><a href="/">Back to Home</a></p>
+<p><a href="/blog">Back to Articles</a></p>

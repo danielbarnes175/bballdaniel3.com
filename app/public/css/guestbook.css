@@ -16,16 +16,27 @@
     border-radius: 5px;
 }
 
+/* Guestbook styles */
+.guestbook-label h3 {
+    margin: 10px 0 0 0;
+}
+
+.guestbook-name-input,
 .guestbook-message-input {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
+    background: var(--bg-surface);
+    color: var(--text-color);
+}
+
+.guestbook-message-input {
     width: 50%;
     height: 100px;
 }
 
 .guestbook-submit-button {
-    background-color: #54855d;
+    background-color: var(--guestbook-btn);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -34,26 +45,26 @@
 }
 
 .guestbook-submit-button:hover {
-    background-color: #27402b;
+    background-color: var(--guestbook-btn-hover);
 }
 
 .guestbook-card-list {
     display: flex;
     flex-direction: column;
     gap: 1em;
-    /* remove bullet */
-    list-style: none;
-  }
-  
-.guestbook-comment-card {
-    background: white;
-    border-radius: 8px;
-    padding: 1em;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 1em 0;
     list-style: none;
 }
-  
+
+.guestbook-comment-card {
+    background: var(--bg-surface);
+    border-radius: 8px;
+    padding: 1em;
+    box-shadow: var(--card-shadow);
+    margin: 1em 0;
+    list-style: none;
+    color: var(--text-color);
+}
+
 .card:hover {
     transform: translateY(-2px);
 }

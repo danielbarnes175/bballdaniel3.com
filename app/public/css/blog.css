@@ -1,12 +1,11 @@
 /* Blog post styles */
 .blog-background {
-    /* background: #f4f4f4; */
-    background: white;
+    background: var(--bg-surface);
     padding: 10px;
 }
 
 .post-content h2 {
-    color: #222;
+    color: var(--text-color);
 }
 
 .post-content p {
@@ -20,7 +19,7 @@
 
 .tag {
     display: inline-block;
-    background: #0077cc;
+    background: var(--tag-bg);
     color: white;
     padding: 5px 10px;
     margin: 5px;
@@ -30,17 +29,17 @@
 }
 
 .tag:hover {
-    background: #005fa3;
+    background: var(--tag-bg-hover);
 }
 
 /* Highlight the active tag */
 .active-tag {
     font-weight: bold;
-    color: #d9534f;
+    color: var(--accent);
 }
 
 .tag.active {
-    background: #d9534f;
+    background: var(--accent);
     font-weight: bold;
 }
 
@@ -52,7 +51,7 @@
 .blog-post {
     padding: 15px;
     margin-bottom: 20px;
-    background: white;
+    background: var(--bg-surface);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -60,7 +59,7 @@
 
 .blog-post:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--card-hover-shadow);
     cursor: pointer;
     text-decoration: none;
 }
@@ -70,13 +69,13 @@
 }
 
 .blog-post small {
-    color: #666;
+    color: var(--text-dim);
     font-size: 14px;
 }
 
 .blog-post p {
     font-size: 16px;
-    color: #333;
+    color: var(--text-color);
 }
 
 .blog-link {
@@ -96,15 +95,18 @@
 .read-more {
     display: inline-block;
     margin-top: 5px;
-    color: #0077cc;
+    color: var(--link-color);
     text-decoration: none;
     font-weight: bold;
 }
 
 .read-more:hover {
     text-decoration: underline;
-}
+    color: var(--link-hover);
 
-.blog-post h3, .blog-post small, .blog-post p, .blog-post .read-more {
-    color: inherit;
-}
+    .blog-post h3,
+    .blog-post small,
+    .blog-post p,
+    .blog-post .read-more {
+        color: inherit;
+    }

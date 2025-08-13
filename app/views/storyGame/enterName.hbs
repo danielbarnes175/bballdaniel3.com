@@ -2,14 +2,14 @@
 
 
 {{#if startGame}}
-<p>Please enter your name to start this game:</p>
+<p class="story-meta">Please enter your name to start this game:</p>
 <form action="/games/story/create" method="GET">
     <input type="hidden" name="code" value="{{code}}">
     <input type="text" name="username" placeholder="Your name" required>
     <button type="submit">Start Game</button>
 </form>
 {{else}}
-<p>Please enter your name to join this game:</p>
+<p class="story-meta">Please enter your name to join this game:</p>
 <form action="/games/story/{{code}}" method="GET">
     <input type="hidden" name="code" value="{{code}}">
     <input type="text" name="username" placeholder="Your name" required>
