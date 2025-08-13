@@ -26,21 +26,20 @@ module.exports = function (app) {
 
     app.route('/games/story/create')
         .get(gameController.createRoom);
-
     app.route('/games/story/:code')
         .get(gameController.joinRoom);
-
     app.route('/games/story/:code/start')
         .post(gameController.startGame);
-
     app.route('/games/story/:code/write')
         .get(gameController.writeTurn)
         .post(gameController.submitTurn);
-
     app.route('/games/story/:code/results')
         .get(gameController.results);
 
-
+    app.route('/health')
+        .get((req, res) => {
+            res.status(200).send("OK");
+        });
 
     app.use((req, res, next) => {
         res.status(404).render('404.hbs');
