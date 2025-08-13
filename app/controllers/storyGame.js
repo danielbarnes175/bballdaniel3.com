@@ -35,7 +35,13 @@ function finishTurn(room, code, io) {
 
 module.exports = {
     createRoom: (req, res) => {
-        const code = Math.random().toString(36).substr(2, 6).toUpperCase();
+        const username = req.query.username;
+
+        if (!username) {
+            return res.render("storyGame/enterName", { startGame: true });
+        }
+
+        const code = Math.random().toString(36).slice(2, 6).toUpperCase();
         rooms[code] = {
             host: req.query.username || "Host",
             settings: { turnTime: 60 },
