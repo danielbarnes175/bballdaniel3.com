@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json()); // For JSON body parsing
 app.use(express.urlencoded({ extended: true }));
-//app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.jpg')));
+app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 // Logging middleware
 app.use(function (req, res, next) {
