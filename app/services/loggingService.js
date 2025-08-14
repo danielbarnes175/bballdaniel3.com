@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = {
-    logRequest: function (req, res) {
+    logRequest: async function (req, res) {
         let current_datetime = new Date();
         let formatted_date =
             current_datetime.getFullYear() +
@@ -35,12 +35,14 @@ module.exports = {
         }
 
         try {
-            axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
+            if (url !== "/health") {
+                await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
+            }
         } catch (error) {
             console.error("Error exporting request log to Discord:", error);
         }
     },
-    logError: (error) => {
+    logError: async (error) => {
         // Discord Webhook Log
         log = {
             "embeds": [
@@ -53,7 +55,7 @@ module.exports = {
         }
 
         try {
-            axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
+            await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
         } catch (error) {
             console.error("Error exporting error log to Discord:", error);
         }

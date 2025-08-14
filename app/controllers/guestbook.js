@@ -36,8 +36,6 @@ function sanitize(input, maxLength) {
 exports.submitGuestbookEntry = (req, res) => {
     res.redirect("/guestbook");
 
-    return;
-
     const name = sanitize(req.body.name || "", 100);
     const message = sanitize(req.body.message || "", 1000);
 
@@ -45,7 +43,6 @@ exports.submitGuestbookEntry = (req, res) => {
         return res.status(400).send("Name and message are required.");
     }
 
-    const entries = getGuestbookEntries();
     const newEntry = {
         name,
         message,
@@ -53,6 +50,10 @@ exports.submitGuestbookEntry = (req, res) => {
     }
 
     sendToDiscord(newEntry);
+
+    return; // Temporarily disabled
+
+    const entries = getGuestbookEntries();
     entries.unshift(newEntry);
 
     saveGuestbookEntries(entries);
