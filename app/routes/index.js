@@ -17,6 +17,8 @@ module.exports = function (app) {
     app.route('/guestbook')
         .get(controller.guestbook)
         .post(controller.submitGuestbookEntry);
+    app.route('/ifGames')
+        .get(controller.ifGames);
     app.route('/now')
         .get(controller.now);
     app.route('/tag/:tag')

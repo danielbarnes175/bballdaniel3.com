@@ -19,5 +19,6 @@ module.exports = {
     submitGuestbookEntry: guestbookController.submitGuestbookEntry,
     now: (req, res) => res.render("now"),
     games: (req, res) => res.render("games"),
+    ifGames: (req, res) => res.render("ifGames"),
     projects: (req, res) => projectsController.getProjects(req, res)
 };
