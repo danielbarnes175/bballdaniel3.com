@@ -51,8 +51,6 @@ exports.submitGuestbookEntry = (req, res) => {
 
     sendToDiscord(newEntry);
 
-    return; // Temporarily disabled
-
     const entries = getGuestbookEntries();
     entries.unshift(newEntry);
 
