@@ -34,12 +34,14 @@ module.exports = {
             ]
         }
 
-        try {
-            if (url !== "/health") {
-                await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
+        if (process.env.DISCORD_REQUESTS_WEBHOOK_URL) {
+            try {
+                if (url !== "/health") {
+                    await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
+                }
+            } catch (error) {
+                console.error("Error exporting request log to Discord:", error);
             }
-        } catch (error) {
-            console.error("Error exporting request log to Discord:", error);
         }
     },
     logError: async (error) => {
@@ -54,10 +56,12 @@ module.exports = {
             ]
         }
 
-        try {
-            await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
-        } catch (error) {
-            console.error("Error exporting error log to Discord:", error);
+        if (process.env.DISCORD_REQUESTS_WEBHOOK_URL) {
+            try {
+                await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
+            } catch (error) {
+                console.error("Error exporting error log to Discord:", error);
+            }
         }
     }
 }

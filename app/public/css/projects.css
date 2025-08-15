@@ -1,0 +1,44 @@
+/* Projects Page Styles */
+.projects-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: var(--bg-surface);
+    color: var(--text-color);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+    width: 320px;
+    transition: box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.project-card:hover {
+    box-shadow: var(--card-hover-shadow);
+}
+
+.project-card h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+}
+
+.project-card p {
+    margin: 0.3rem 0;
+    color: var(--text-color);
+}
+
+.project-card a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.project-card a:hover {
+    text-decoration: underline;
+    color: var(--link-hover);
+}
