@@ -4,7 +4,7 @@
 <div class="story">
     <h2>Story #{{add @index 1}}</h2>
     <p><strong>Contributors:</strong> {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
-    <pre class="resultsBox">{{this.content}}</pre>
+    <div class="resultsBox story-markdown">{{{markdown this.content}}}</div>
 </div>
 {{/each}}
 

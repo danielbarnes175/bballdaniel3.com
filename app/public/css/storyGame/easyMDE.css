@@ -1,0 +1,23 @@
+.editor-statusbar {
+    color: var(--text-color) !important;
+}
+
+.editor-toolbar {
+    background-color: var(--mde-toolbar-background-color) !important;
+}
+
+.editor-toolbar button {
+    color: var(--text-color) !important;
+}
+
+.editor-toolbar button:hover,
+.editor-toolbar button.active {
+    background-color: var(--mde-toolbar-background-color) !important;
+    background: var(--mde-toolbar-background-color) !important;
+}
+
+.CodeMirror,
+.editor-preview {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-color) !important;
+}

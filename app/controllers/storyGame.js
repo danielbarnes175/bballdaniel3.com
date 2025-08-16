@@ -121,6 +121,7 @@ module.exports = {
         room.stories = room.players.map(p => ({ authors: [], content: "" }));
         room.state = "active";
         room.progress = {};
+
         // lastCompletedTurn semantics: -1 means none completed yet; writable turn is lastCompletedTurn + 1
         room.players.forEach(player => {
             room.progress[player.name] = -1;

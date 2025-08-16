@@ -13,6 +13,11 @@
 </form>
 
 <script>
+    const easyMDE = new EasyMDE({
+        toolbar: ["bold", "italic", "|", "preview"],
+        status: ["lines", "words"],
+        spellChecker: false,
+    });
     let time = {{ timeLeft }};
     const timerEl = document.getElementById('timer');
     const form = document.getElementById('writeForm');
@@ -33,5 +38,4 @@
     socket.on("game-finished", () => {
         window.location.href = `/games/story/${code}/results`;
     });
-
 </script>

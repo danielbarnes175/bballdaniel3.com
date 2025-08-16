@@ -19,17 +19,18 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 const viewsPath = path.join(__dirname, "views");
 const postsPath = path.join(viewsPath, "posts");
 
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.socket.io", "https://unpkg.com"],
-            connectSrc: ["'self'", "ws:", "wss:"], // Allow WebSocket connections
-            styleSrc: ["'self'", "'unsafe-inline'"],
-            imgSrc: ["'self'", "data:"],
-        }
-    }
-}));
+// app.use(helmet({
+//     contentSecurityPolicy: {
+//         directives: {
+//             defaultSrc: ["'self'"],
+//             // Allow only external script hosts actually needed. Inline/event handlers removed.
+//             scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.socket.io", "https://unpkg.com"],
+//             connectSrc: ["'self'", "ws:", "wss:"],
+//             styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"], // keep unsafe-inline for styles (e.g., potential inline <style>)
+//             imgSrc: ["'self'", "data:"],
+//         }
+//     }
+// }));
 
 app.engine("hbs", engine({
     extname: ".hbs",

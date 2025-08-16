@@ -33,6 +33,7 @@ body {
     --accent: #d9534f;
     --guestbook-btn: #54855d;
     --guestbook-btn-hover: #27402b;
+    --mde-toolbar-background-color: #f4f4f4;
 }
 
 /* Dark theme overrides */
@@ -57,6 +58,7 @@ body.dark-theme {
     --accent: #ff7b72;
     --guestbook-btn: #336845;
     --guestbook-btn-hover: #21402c;
+    --mde-toolbar-background-color: #333333;
 }
 
 
