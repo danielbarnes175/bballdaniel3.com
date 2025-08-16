@@ -1,6 +1,6 @@
 const fs = require("fs").promises;
 const path = require("path");
-const marked = require("marked");
+const { renderMarkdown } = require("../helpers/sanitizeMarkdown");
 const matter = require("gray-matter");
 const { getBlogList } = require("../helpers/getBlogList");
 
@@ -22,7 +22,7 @@ exports.getPost = async (req, res) => {
         const data = await fs.readFile(postFile, "utf8");
 
         const parsed = matter(data);
-        const content = marked.parse(parsed.content);
+        const content = renderMarkdown(parsed.content);
 
         res.render("blogPost", {
             title: parsed.data.title || "Blog Post",

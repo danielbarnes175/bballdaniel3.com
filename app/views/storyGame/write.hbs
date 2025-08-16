@@ -17,6 +17,14 @@
         toolbar: ["bold", "italic", "|", "preview"],
         status: ["lines", "words"],
         spellChecker: false,
+        renderingConfig: {
+            sanitizerFunction: (renderedHTML) => {
+                return DOMPurify.sanitize(renderedHTML, {
+                    ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'p', 'br', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'blockquote'],
+                    ALLOWED_ATTR: []
+                });
+            }
+        }
     });
     let time = {{ timeLeft }};
     const timerEl = document.getElementById('timer');
