@@ -61,6 +61,8 @@ module.exports = {
 
         if (!room) return res.status(404).render('404');
 
+        if (room.state !== "waiting") return res.status(403).send("Game already started");
+
         if (!username) {
             return res.render("storyGame/enterName", { code });
         }
