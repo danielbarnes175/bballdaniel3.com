@@ -61,13 +61,19 @@ module.exports = {
 
         if (!room) return res.status(404).render('404');
 
-        if (room.state !== "waiting") return res.status(403).send("Game already started");
-
         if (!username) {
+            if (room.state !== "waiting") {
+                return res.status(403).send("Game already started");
+            }
             return res.render("storyGame/enterName", { code });
         }
 
         const alreadyInRoom = room.players.some(p => p.name === username);
+
+        if (room.state !== "waiting" && !alreadyInRoom) {
+            return res.status(403).send("Game already started");
+        }
+
         if (!alreadyInRoom) {
             room.players.push({ name: username });
             io.to(code).emit('player-joined', room.players);
