@@ -25,6 +25,16 @@ function finishTurn(room, code, io) {
 
     room.currentTurn++;
 
+    // Advance any players who missed submitting so their lastCompletedTurn isn't stale.
+    const justFinishedTurn = room.currentTurn - 1;
+    room.players.forEach(player => {
+        if (room.progress && typeof room.progress[player.name] === 'number') {
+            if (room.progress[player.name] < justFinishedTurn) {
+                room.progress[player.name] = justFinishedTurn;
+            }
+        }
+    });
+
     if (room.currentTurn >= room.players.length) {
         room.state = "finished";
         io.to(code).emit("game-finished");
@@ -111,8 +121,9 @@ module.exports = {
         room.stories = room.players.map(p => ({ authors: [], content: "" }));
         room.state = "active";
         room.progress = {};
+        // lastCompletedTurn semantics: -1 means none completed yet; writable turn is lastCompletedTurn + 1
         room.players.forEach(player => {
-            room.progress[player.name] = 0;
+            room.progress[player.name] = -1;
         });
         room.turnStartTime = Date.now();
 
@@ -132,7 +143,7 @@ module.exports = {
     writeTurn: (req, res) => {
         const code = req.params.code.toUpperCase();
         const username = req.query.username;
-        const turn = parseInt(req.query.turn);
+        const requestedTurn = parseInt(req.query.turn);
 
         const room = rooms[code];
         if (!room || room.state !== "active") return res.status(404).render('404');
@@ -140,12 +151,25 @@ module.exports = {
         const playerIndex = room.players.findIndex(p => p.name === username);
         if (playerIndex === -1) return res.status(404).render('404');
 
-        const expectedTurn = room.progress[username];
-        if (turn !== expectedTurn) {
-            return res.status(403).send("Nice try, but you can’t skip turns!");
+        const lastCompletedTurn = room.progress[username];
+        // If player somehow fell more than one turn behind, fast-forward them (missed submissions are auto-filled)
+        if (lastCompletedTurn < room.currentTurn - 1) {
+            room.progress[username] = room.currentTurn - 1;
         }
 
-        const storyIndex = (playerIndex + turn) % room.players.length;
+        // After potential fast-forward
+        const authoritativeWritableTurn = room.progress[username] + 1;
+
+        // Writable turn must be the room.currentTurn; otherwise redirect to server authoritative URL
+        if (authoritativeWritableTurn !== room.currentTurn) {
+            return res.status(302).redirect(`/games/story/${code}/write?username=${encodeURIComponent(username)}&turn=${room.currentTurn}`);
+        }
+
+        if (isNaN(requestedTurn) || requestedTurn !== room.currentTurn) {
+            return res.status(302).redirect(`/games/story/${code}/write?username=${encodeURIComponent(username)}&turn=${room.currentTurn}`);
+        }
+
+        const storyIndex = (playerIndex + room.currentTurn) % room.players.length;
         const story = room.stories[storyIndex];
 
         const now = Date.now();
@@ -154,7 +178,7 @@ module.exports = {
 
         res.render("storyGame/write", {
             code,
-            turn,
+            turn: room.currentTurn,
             storyIndex: storyIndex + 1,
             username,
             time: room.settings.turnTime,
@@ -170,16 +194,16 @@ module.exports = {
         const room = rooms[code.toUpperCase()];
         if (!room || room.state !== "active") return res.status(404).render('404');
 
-        const currentTurn = room.currentTurn;
+        const currentTurn = room.currentTurn; // active turn index
         if (parseInt(turn) !== currentTurn) {
             return res.status(403).send("Wrong turn");
         }
 
         room.submissions[username] = content;
-        room.progress[username]++;
+        room.progress[username] = currentTurn; // mark this turn as completed
 
         // Player gets a waiting screen
-        res.render("storyGame/wait", { code, turn, username, message: "Waiting for other players..." });
+        res.render("storyGame/wait", { code, turn: currentTurn, username, message: "Waiting for other players..." });
     },
 
 
