@@ -20,5 +20,12 @@ module.exports = {
     markdown: function (text) {
         const clean = renderMarkdown(text);
         return new Handlebars.SafeString(clean);
+    },
+    JSONstringify: function (context) {
+        try {
+            return JSON.stringify(context || []);
+        } catch (e) {
+            return '[]';
+        }
     }
 };

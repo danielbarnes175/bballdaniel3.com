@@ -19,6 +19,10 @@
     <label>Turn Time (seconds):
         <input type="number" name="turnTime" value="{{room.settings.turnTime}}" min="10" />
     </label>
+    <label style="display:block;margin-top:8px;">
+        <input type="checkbox" name="keepHistory" {{#if room.settings.keepHistory}}checked{{/if}} /> Enable view
+        individual submissions
+    </label>
     <button type="submit">Start Game</button>
 </form>
 {{else}}

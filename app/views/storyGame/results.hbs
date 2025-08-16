@@ -1,11 +1,74 @@
 <h1>Final Stories</h1>
 
 {{#each stories}}
-<div class="story">
+<div class="story" data-story-index="{{@index}}">
     <h2>Story #{{add @index 1}}</h2>
-    <p><strong>Contributors:</strong> {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
-    <div class="resultsBox story-markdown">{{{markdown this.content}}}</div>
+    <p><strong>Contributors (final order):</strong> {{#each this.authors}}{{this}}{{#unless @last}},
+        {{/unless}}{{/each}}</p>
+    {{#if ../keepHistory}}
+    <div class="history-controls" data-controls-for="{{@index}}" style="margin:6px 0;">
+        <button class="hist-prev" title="View earlier turn">&larr;</button>
+        <span class="hist-status">Final ({{this.authors.length}} / {{this.authors.length}} turns)</span>
+        <button class="hist-next" title="View later turn" {{#unless
+            this.history.length}}disabled{{/unless}}>&rarr;</button>
+    </div>
+    {{/if}}
+    <div class="resultsBox story-markdown story-content">{{{markdown this.content}}}</div>
+    {{#if ../keepHistory}}
+    <script type="application/json" class="story-history">{{{JSONstringify this.history}}}</script>
+    {{/if}}
 </div>
 {{/each}}
 
 <a href="/games">Back to Games</a>
+
+{{#if keepHistory}}
+<script>
+    // Simple history navigator per story
+    document.querySelectorAll('.story').forEach(storyEl => {
+        const historyScript = storyEl.querySelector('.story-history');
+        if (!historyScript) return; // safety
+        let history; try { history = JSON.parse(historyScript.textContent || '[]'); } catch (e) { history = []; }
+        // history entries already include html; ensure sorted by turn
+        history.sort((a, b) => a.turn - b.turn);
+        const contentEl = storyEl.querySelector('.story-content');
+        // Save final HTML immediately so we can always restore it
+        if (!contentEl.dataset.finalHtml) {
+            contentEl.dataset.finalHtml = contentEl.innerHTML;
+        }
+        const statusEl = storyEl.querySelector('.hist-status');
+        const prevBtn = storyEl.querySelector('.hist-prev');
+        const nextBtn = storyEl.querySelector('.hist-next');
+        const total = history.length;
+        // index: total means final combined story; otherwise 0..total-1 for each turn snapshot
+        let idx = total; // start at final
+
+        function render() {
+            if (idx === total) {
+                // final
+                statusEl.textContent = 'Final (' + total + ' / ' + total + ' turns)';
+            } else {
+                const h = history[idx];
+                statusEl.textContent = 'After Turn ' + (h.turn + 1) + ' by ' + h.author + ' (' + (idx + 1) + ' / ' + total + ')';
+            }
+            prevBtn.disabled = (idx === 0);
+            nextBtn.disabled = (idx === total);
+            if (idx === total) {
+                contentEl.innerHTML = contentEl.dataset.finalHtml;
+            } else {
+                contentEl.innerHTML = history[idx].html;
+            }
+        }
+        if (total === 0) {
+            // No intermediate history; disable both
+            if (prevBtn) prevBtn.disabled = true;
+            if (nextBtn) nextBtn.disabled = true;
+        } else {
+            prevBtn && prevBtn.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
+            nextBtn && nextBtn.addEventListener('click', () => { if (idx < total) { idx++; render(); } });
+            // Initialize button states
+            render();
+        }
+    });
+</script>
+{{/if}}

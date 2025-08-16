@@ -1,4 +1,5 @@
 const rooms = {}; // In-memory storage for now
+const { renderMarkdown } = require('../helpers/sanitizeMarkdown');
 
 function startTurn(room, code, io) {
     room.turnStartTime = Date.now();
@@ -17,10 +18,19 @@ function startTurn(room, code, io) {
 function finishTurn(room, code, io) {
     room.players.forEach((player, index) => {
         const storyIndex = (index + room.currentTurn) % room.players.length;
-        const submission = room.submissions[player.name] || room.stories[storyIndex].content;
+        const story = room.stories[storyIndex];
+        const submission = room.submissions[player.name] || story.content;
 
-        room.stories[storyIndex].content = submission;
-        room.stories[storyIndex].authors.push(player.name);
+        story.content = submission;
+        story.authors.push(player.name);
+        if (room.settings.keepHistory && Array.isArray(story.history)) {
+            story.history.push({
+                turn: room.currentTurn,
+                author: player.name,
+                content: submission,
+                html: renderMarkdown(submission)
+            });
+        }
     });
 
     room.currentTurn++;
@@ -54,7 +64,7 @@ module.exports = {
         const code = Math.random().toString(36).slice(2, 6).toUpperCase();
         rooms[code] = {
             host: req.query.username || "Host",
-            settings: { turnTime: 60 },
+            settings: { turnTime: 60, keepHistory: false },
             players: [],
             stories: [],
             state: "waiting"
@@ -114,11 +124,14 @@ module.exports = {
         const room = rooms[code];
         if (!room) return res.status(404).render('404');
 
+        // Apply host settings
+        room.settings.keepHistory = !!req.body.keepHistory;
+
         // Init game state
         room.currentTurn = 0;
         room.bufferTime = 5000;
         room.submissions = {};
-        room.stories = room.players.map(p => ({ authors: [], content: "" }));
+        room.stories = room.players.map(p => ({ authors: [], content: "", history: room.settings.keepHistory ? [] : undefined }));
         room.state = "active";
         room.progress = {};
 
@@ -216,7 +229,8 @@ module.exports = {
 
         res.render("storyGame/results", {
             code,
-            stories: room.stories
+            stories: room.stories,
+            keepHistory: room.settings.keepHistory
         });
     }
 };
