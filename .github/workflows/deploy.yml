@@ -26,8 +26,8 @@ jobs:
             eval `ssh-agent -s`
             ssh-add ~/.ssh/id_github
             cd ~/applications/bballdaniel3.com
-            git fetch origin main
-            git pull origin main
+            git fetch --prune origin main
+            git reset --hard origin/main
             docker-compose down
             npm run build
             npm run start
