@@ -24,28 +24,26 @@
 
 {{#if keepHistory}}
 <script>
-    // Simple history navigator per story
     document.querySelectorAll('.story').forEach(storyEl => {
         const historyScript = storyEl.querySelector('.story-history');
-        if (!historyScript) return; // safety
+        if (!historyScript) return;
         let history; try { history = JSON.parse(historyScript.textContent || '[]'); } catch (e) { history = []; }
-        // history entries already include html; ensure sorted by turn
+
         history.sort((a, b) => a.turn - b.turn);
         const contentEl = storyEl.querySelector('.story-content');
-        // Save final HTML immediately so we can always restore it
+
         if (!contentEl.dataset.finalHtml) {
             contentEl.dataset.finalHtml = contentEl.innerHTML;
         }
+
         const statusEl = storyEl.querySelector('.hist-status');
         const prevBtn = storyEl.querySelector('.hist-prev');
         const nextBtn = storyEl.querySelector('.hist-next');
         const total = history.length;
-        // index: total means final combined story; otherwise 0..total-1 for each turn snapshot
         let idx = total; // start at final
 
         function render() {
             if (idx === total) {
-                // final
                 statusEl.textContent = 'Final (' + total + ' / ' + total + ' turns)';
             } else {
                 const h = history[idx];
@@ -66,6 +64,7 @@
         } else {
             prevBtn && prevBtn.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
             nextBtn && nextBtn.addEventListener('click', () => { if (idx < total) { idx++; render(); } });
+
             // Initialize button states
             render();
         }
