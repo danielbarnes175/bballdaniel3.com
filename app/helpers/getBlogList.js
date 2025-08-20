@@ -5,12 +5,20 @@ const matter = require("gray-matter");
 const postsPath = path.join(__dirname, "../views/posts");
 
 function getExcerpt(content, maxLength = 200) {
-    let plainText = content.replace(/[#_*~>]/g, "");
-    plainText = plainText.split("\n").find(line => line.trim().length > 0) || "";
+    // Remove markdown image syntax ![alt](url) and HTML <img> tags
+    let cleaned = content
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+        .replace(/<img[^>]*>/gi, "");
 
-    return plainText.length > maxLength
-        ? plainText.substring(0, maxLength) + "..."
-        : plainText;
+    // Remove any remaining HTML tags & markdown formatting characters
+    cleaned = cleaned.replace(/<[^>]+>/g, "");
+    cleaned = cleaned.replace(/[#_*~>`]/g, "");
+
+    // Get the first non-empty line
+    const firstText = cleaned.split("\n").find(line => line.trim().length > 0) || "";
+    return firstText.length > maxLength
+        ? firstText.substring(0, maxLength) + "..."
+        : firstText;
 }
 
 async function getBlogList() {
