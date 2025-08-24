@@ -211,5 +211,269 @@ describe('Story Game Controller', () => {
                 message: 'Waiting for other players...'
             }));
         });
+
+        test('should reject wrong turn submission', () => {
+            jest.useFakeTimers();
+            
+            // Create and start a game
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            mockReq.params.code = roomCode;
+            mockReq.query.username = 'Player1';
+            controller.joinRoom(mockReq, mockRes);
+            
+            mockReq.body = { keepHistory: false, turnTime: '60' };
+            controller.startGame(mockReq, mockRes);
+            jest.advanceTimersByTime(1000);
+            
+            // Try to submit wrong turn
+            mockReq.body = {
+                code: roomCode,
+                turn: '1', // Wrong turn (should be 0)
+                username: 'Player1',
+                content: 'Test content'
+            };
+            mockRes.status.mockClear();
+            mockRes.send.mockClear();
+            
+            controller.submitTurn(mockReq, mockRes);
+            
+            expect(mockRes.status).toHaveBeenCalledWith(403);
+            expect(mockRes.send).toHaveBeenCalledWith('Wrong turn');
+        });
+    });
+
+    describe('joinRoom - additional edge cases', () => {
+        test('should handle game already started but no username provided', () => {
+            jest.useFakeTimers();
+            
+            // Create room and start game
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            mockReq.params.code = roomCode;
+            mockReq.query.username = 'TestHost';
+            controller.joinRoom(mockReq, mockRes);
+            
+            mockReq.body = { keepHistory: false, turnTime: '60' };
+            controller.startGame(mockReq, mockRes);
+            
+            // Clear and try to join without username
+            mockRes.status.mockClear();
+            mockRes.send.mockClear();
+            mockReq.query.username = null;
+            
+            controller.joinRoom(mockReq, mockRes);
+            
+            expect(mockRes.status).toHaveBeenCalledWith(403);
+            expect(mockRes.send).toHaveBeenCalledWith('Game already started');
+        });
+
+        test('should add new player to waiting room', () => {
+            // Create room
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            // Join with new player
+            mockReq.params.code = roomCode;
+            mockReq.query.username = 'NewPlayer';
+            mockIo.emit.mockClear();
+            
+            controller.joinRoom(mockReq, mockRes);
+            
+            // Should emit player-joined event
+            expect(mockIo.to).toHaveBeenCalledWith(roomCode);
+            expect(mockIo.emit).toHaveBeenCalledWith('player-joined', expect.any(Array));
+        });
+    });
+
+    describe('startGame - additional edge cases', () => {
+        test('should handle invalid turn time input', () => {
+            jest.useFakeTimers();
+            
+            // Create room with players
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            mockReq.params.code = roomCode;
+            mockReq.query.username = 'TestHost';
+            controller.joinRoom(mockReq, mockRes);
+            
+            // Test with invalid turn time
+            mockReq.body = {
+                turnTime: 'invalid',
+                keepHistory: false
+            };
+            mockRes.redirect.mockClear();
+            
+            controller.startGame(mockReq, mockRes);
+            
+            expect(mockRes.redirect).toHaveBeenCalled();
+            
+            // Advance timer to check turn time was defaulted to 60
+            jest.advanceTimersByTime(1000);
+            expect(mockIo.emit).toHaveBeenCalledWith('start-turn', expect.objectContaining({
+                endsIn: 60 // Should default to 60 seconds
+            }));
+        });
+
+        test('should handle turn time below minimum', () => {
+            jest.useFakeTimers();
+            
+            // Create room
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            mockReq.params.code = roomCode;
+            mockReq.query.username = 'TestHost';
+            controller.joinRoom(mockReq, mockRes);
+            
+            // Test with turn time below minimum (10 seconds)
+            mockReq.body = {
+                turnTime: '5',
+                keepHistory: true
+            };
+            
+            controller.startGame(mockReq, mockRes);
+            jest.advanceTimersByTime(1000);
+            
+            // Should default to 60 seconds when below minimum
+            expect(mockIo.emit).toHaveBeenCalledWith('start-turn', expect.objectContaining({
+                endsIn: 60
+            }));
+        });
+
+        test('should initialize game with history when requested', () => {
+            jest.useFakeTimers();
+            
+            // Create room
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            mockReq.params.code = roomCode;
+            mockReq.query.username = 'Player1';
+            controller.joinRoom(mockReq, mockRes);
+            
+            mockReq.query.username = 'Player2';
+            controller.joinRoom(mockReq, mockRes);
+            
+            // Start with history enabled
+            mockReq.body = {
+                turnTime: '30',
+                keepHistory: 'on'
+            };
+            
+            controller.startGame(mockReq, mockRes);
+            
+            // This tests the keepHistory initialization path
+            expect(mockRes.redirect).toHaveBeenCalled();
+        });
+    });
+
+    describe('writeTurn', () => {
+        test('should return 404 for non-existent room', () => {
+            mockReq.params.code = 'FAKE';
+            mockReq.query = { username: 'Player', turn: '0' };
+            
+            controller.writeTurn(mockReq, mockRes);
+            
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.render).toHaveBeenCalledWith('404');
+        });
+
+        test('should return 404 for inactive room', () => {
+            // Create room but don't start it
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            mockReq.params.code = roomCode;
+            mockReq.query = { username: 'TestHost', turn: '0' };
+            mockRes.status.mockClear();
+            mockRes.render.mockClear();
+            
+            controller.writeTurn(mockReq, mockRes);
+            
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.render).toHaveBeenCalledWith('404');
+        });
+
+        test('should return 404 for player not in room', () => {
+            jest.useFakeTimers();
+            
+            // Create and start game
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            mockReq.params.code = roomCode;
+            mockReq.query.username = 'TestHost';
+            controller.joinRoom(mockReq, mockRes);
+            
+            mockReq.body = { keepHistory: false, turnTime: '60' };
+            controller.startGame(mockReq, mockRes);
+            
+            // Try to access with unknown player
+            mockReq.query = { username: 'UnknownPlayer', turn: '0' };
+            mockRes.status.mockClear();
+            mockRes.render.mockClear();
+            
+            controller.writeTurn(mockReq, mockRes);
+            
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.render).toHaveBeenCalledWith('404');
+        });
+    });
+
+    describe('results', () => {
+        test('should return 404 for non-existent room', () => {
+            mockReq.params.code = 'FAKE';
+            
+            controller.results(mockReq, mockRes);
+            
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.render).toHaveBeenCalledWith('404');
+        });
+
+        test('should return 404 for non-finished room', () => {
+            // Create room but don't finish it
+            mockReq.query.username = 'TestHost';
+            controller.createRoom(mockReq, mockRes);
+            
+            const redirectUrl = mockRes.redirect.mock.calls[0][0];
+            const roomCode = redirectUrl.match(/\/games\/story\/([A-Z0-9]{4})/)[1];
+            
+            mockReq.params.code = roomCode;
+            mockRes.status.mockClear();
+            mockRes.render.mockClear();
+            
+            controller.results(mockReq, mockRes);
+            
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.render).toHaveBeenCalledWith('404');
+        });
     });
 });
