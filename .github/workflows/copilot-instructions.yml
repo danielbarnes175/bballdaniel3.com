@@ -75,7 +75,7 @@ jobs:
               exit 1
             fi
             
-            echo "✅ Copilot instructions format validation passed"
+            echo "Copilot instructions format validation passed"
           else
             echo "::error::Copilot instructions file not found at .github/copilot-instructions.md"
             exit 1
@@ -86,7 +86,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const output = `## 📝 Copilot Instructions Update Reminder
+            const output = `## Copilot Instructions Update Reminder
             
             This PR includes changes that may require updates to the Copilot instructions:
             
