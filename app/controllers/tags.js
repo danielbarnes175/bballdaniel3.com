@@ -16,7 +16,7 @@ exports.getTag = async (req, res) => {
             tags: tagCounts
         });
     } catch (error) {
-        console.error("Error loading tags:", error);
+        console.error(`[tags.getTag] Error loading tag ${req.params.tag}:`, error);
         res.status(500).send("Error loading tags");
     }
 };

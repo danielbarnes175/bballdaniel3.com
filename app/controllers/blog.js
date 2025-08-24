@@ -11,7 +11,7 @@ exports.getBlog = async (req, res) => {
         const { posts, tagCounts } = await getBlogList();
         res.render("blog", { title: "Blog", posts, tags: tagCounts });
     } catch (error) {
-        console.error("Error loading posts:", error);
+        console.error("[blog.getBlog] Error loading posts:", error);
         res.status(500).send("Error loading posts");
     }
 };
@@ -32,7 +32,7 @@ exports.getPost = async (req, res) => {
             layout: "blog"
         });
     } catch (error) {
-        console.error("Error loading post:", error);
+        console.error(`[blog.getPost] Error loading post ${req.params.post}:`, error);
         res.status(404).send("Post not found");
     }
 };
