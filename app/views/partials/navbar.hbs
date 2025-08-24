@@ -1,20 +1,27 @@
-<div class="navbar container">
-    <div class="horizontal-margins navbar-container">
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-container">
         <ul class="navbar-list navbar-logo">
             <li>
-                <!-- <a href="/"><img alt="Home" src="/images/DevelopInspireCreateStackedCropped.webp"></a> -->
-                <a href="/">Home</a>
+                <a href="/" aria-label="Home - bballdaniel3.com">Home</a>
             </li>
         </ul>
         <ul class="navbar-list">
             <li>
-                <a href="/games">Games</a>
-                <a href="/projects">Projects</a>
-                <a href="/blog">Blog</a>
-                <a href="/guestbook">Guestbook</a>
-                <button id="theme-toggle" type="button" aria-label="Toggle dark mode" data-no-swup
-                    class="theme-toggle">🌙</button>
+                <a href="/games" aria-label="View games section">Games</a>
+                <a href="/projects" aria-label="View projects portfolio">Projects</a>
+                <a href="/blog" aria-label="Read blog posts">Blog</a>
+                <a href="/guestbook" aria-label="Sign or view guestbook">Guestbook</a>
+                <button 
+                    id="theme-toggle" 
+                    type="button" 
+                    aria-label="Toggle between light and dark theme" 
+                    data-no-swup
+                    class="theme-toggle"
+                    title="Toggle theme">
+                    <span aria-hidden="true">🌙</span>
+                    <span class="sr-only">Toggle dark mode</span>
+                </button>
             </li>
         </ul>
     </div>
-</div>
+</nav>
