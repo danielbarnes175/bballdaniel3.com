@@ -19,18 +19,38 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 const viewsPath = path.join(__dirname, "views");
 const postsPath = path.join(viewsPath, "posts");
 
-// app.use(helmet({
-//     contentSecurityPolicy: {
-//         directives: {
-//             defaultSrc: ["'self'"],
-//             // Allow only external script hosts actually needed. Inline/event handlers removed.
-//             scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.socket.io", "https://unpkg.com"],
-//             connectSrc: ["'self'", "ws:", "wss:"],
-//             styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"], // keep unsafe-inline for styles (e.g., potential inline <style>)
-//             imgSrc: ["'self'", "data:"],
-//         }
-//     }
-// }));
+// Security headers with proper CSP for modern web apps
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            // Allow self-hosted scripts and specific external resources where needed
+            scriptSrc: [
+                "'self'", 
+                "'unsafe-inline'", // Needed for theme toggle inline script
+                "https://unpkg.com", // TODO: Replace with self-hosted alternatives
+                "https://cdn.jsdelivr.net" // TODO: Replace with self-hosted alternatives
+            ],
+            connectSrc: ["'self'", "ws:", "wss:"], // WebSocket for Socket.io
+            styleSrc: [
+                "'self'", 
+                "'unsafe-inline'", // Needed for dynamic theme styles
+                "https://cdn.jsdelivr.net" // TODO: Replace with self-hosted alternatives
+            ],
+            imgSrc: ["'self'", "data:", "https:"], // Allow external images
+            fontSrc: ["'self'", "data:"], // Self-hosted fonts only
+            objectSrc: ["'none'"],
+            baseUri: ["'self'"],
+            formAction: ["'self'"],
+            frameAncestors: ["'none'"]
+        }
+    },
+    hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+    }
+}));
 
 app.engine("hbs", engine({
     extname: ".hbs",
@@ -58,7 +78,33 @@ io.on('connection', (socket) => {
     });
 });
 
-app.use(express.static(path.join(__dirname, "public")));
+// Serve static files with cache control headers for performance
+app.use(express.static(path.join(__dirname, "public"), {
+    maxAge: '1d', // Cache static assets for 1 day
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, path) => {
+        // Cache CSS, JS, and font files longer
+        if (path.endsWith('.css') || path.endsWith('.js') || path.endsWith('.woff2')) {
+            res.setHeader('Cache-Control', 'public, max-age=604800'); // 1 week
+        }
+        // Cache images for longer
+        if (path.match(/\.(png|jpg|jpeg|gif|webp|svg|ico)$/)) {
+            res.setHeader('Cache-Control', 'public, max-age=2592000'); // 1 month
+        }
+        // Security headers
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+    }
+}));
+
+// Enable gzip compression for better performance
+app.use((req, res, next) => {
+    if (req.headers['accept-encoding'] && req.headers['accept-encoding'].includes('gzip')) {
+        res.setHeader('Content-Encoding', 'gzip');
+    }
+    next();
+});
+
 app.use(express.json()); // For JSON body parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));

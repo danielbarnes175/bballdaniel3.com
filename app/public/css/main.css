@@ -385,6 +385,8 @@ body.dark-theme {
 .text-right { text-align: right; }
 
 .text-dim { color: var(--text-dim); }
+.text-sm { font-size: 0.875rem; }
+.text-lg { font-size: 1.125rem; }
 
 .block { display: block; }
 
@@ -395,6 +397,8 @@ body.dark-theme {
 .rounded-lg { 
     border-radius: var(--radius-lg); 
 }
+
+.ml-2 { margin-left: var(--space-2); }
 
 /* Form improvements */
 input, textarea, select {
@@ -433,7 +437,18 @@ input:focus, textarea:focus, select:focus {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
+}
+
+/* Manual reduced motion toggle */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
 }
 
 @font-face {
