@@ -96,7 +96,8 @@ npm run restart # docker-compose down && docker-compose up --build -d
 - Follow Node.js conventions
 - Use `const` and `let` appropriately
 - Consistent indentation (appears to use 4 spaces)
-- Code should pass linting with `make lint`
+- Follow consistent code style and best practices
+- Consider setting up linting tools (ESLint, Prettier) for code quality
 - Never use emojis in code, comments, or commit messages
 - Avoid excessive comments that explain basic or obvious functionality
 - Only add comments for complex logic or non-obvious implementation details
