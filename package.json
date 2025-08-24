@@ -4,9 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration", 
+    "test:ui": "playwright test",
+    "test:all": "npm run test && npm run test:ui",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "build": "docker-compose build",
     "start": "docker-compose up -d",
+    "start:dev": "nodemon --ignore 'app/data/*' -e \"*\" app/server.js",
     "restart": "docker-compose down && docker-compose up --build -d",
     "nodemon": "nodemon --ignore 'app/data/*' -e \"*\" app/server.js"
   },
@@ -14,21 +21,25 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.9.0",
+    "dompurify": "^3.1.6",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "express-handlebars": "^8.0.1",
     "fs": "^0.0.1-security",
     "gray-matter": "^4.0.3",
     "helmet": "^8.1.0",
-    "marked": "^15.0.6",
-    "dompurify": "^3.1.6",
     "jsdom": "^25.0.1",
+    "marked": "^15.0.6",
     "sanitize-html": "^2.16.0",
     "serve-favicon": "^2.5.1",
     "socket.io": "^4.8.1",
     "swup": "^4.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "@playwright/test": "^1.55.0",
+    "eslint-plugin-jest": "^29.0.1",
+    "jest": "^30.0.5",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.1.4"
   }
 }
