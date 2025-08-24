@@ -90,7 +90,7 @@ jobs:
             
             This PR includes changes that may require updates to the Copilot instructions:
             
-            ${process.env.DEPENDENCIES_CHANGED === 'true' ? '- 📦 Dependencies changed - consider updating the dependency list\n' : ''}${process.env.STRUCTURE_CHANGED === 'true' ? '- 📁 App structure changed - consider updating the project structure section\n' : ''}${process.env.WORKFLOW_CHANGED === 'true' ? '- ⚙️ Workflows changed - consider updating the development workflow section\n' : ''}${process.env.DOCKER_CHANGED === 'true' ? '- 🐳 Docker configuration changed - consider updating the deployment section\n' : ''}
+            ${process.env.DEPENDENCIES_CHANGED === 'true' ? '- Dependencies changed - consider updating the dependency list\n' : ''}${process.env.STRUCTURE_CHANGED === 'true' ? '- App structure changed - consider updating the project structure section\n' : ''}${process.env.WORKFLOW_CHANGED === 'true' ? '- Workflows changed - consider updating the development workflow section\n' : ''}${process.env.DOCKER_CHANGED === 'true' ? '- Docker configuration changed - consider updating the deployment section\n' : ''}
             
             Please review and update [\`.github/copilot-instructions.md\`](.github/copilot-instructions.md) if necessary.`;
             
