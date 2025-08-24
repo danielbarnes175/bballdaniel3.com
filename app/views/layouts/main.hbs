@@ -4,7 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0066cc">
     <title>bballdaniel3.com</title>
+    <meta name="description" content="Daniel's personal website featuring projects, blog posts, games, and interactive experiences.">
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/css/main.css" as="style">
+    <link rel="preload" href="/css/header.css" as="style">
+    <link rel="preload" href="/fonts/charter_regular.woff2" as="font" type="font/woff2" crossorigin>
+    
     <link rel="stylesheet" href="/css/animations.css">
     <link rel="stylesheet" href="/css/blog.css">
     <link rel="stylesheet" href="/css/footer.css">
@@ -15,7 +23,9 @@
     <link rel="stylesheet" href="/css/storyGame/results.css">
     <link rel="stylesheet" href="/css/storyGame/easyMDE.css">
     <link rel="stylesheet" href="/css/projects.css">
+    
     <script>(function () { try { var t = localStorage.getItem('site-theme'); if (!t) { if (window.matchMedia('(prefers-color-scheme: dark)').matches) { t = 'dark'; } } if (t === 'dark') { document.documentElement.classList.add('js'); document.addEventListener('DOMContentLoaded', function () { document.body.classList.add('dark-theme'); }); } } catch (e) { } })();</script>
+    <!-- Note: Swup and EasyMDE would be self-hosted in production but external resources are blocked in this environment -->
     <script defer src="https://unpkg.com/swup@4"></script>
     <script defer src="https://unpkg.com/@swup/forms-plugin@3"></script>
     <script defer type="module" src="/swup.js"></script>
@@ -30,15 +40,19 @@
 </head>
 
 <body class="main-background">
-    <header>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <header role="banner">
         {{> navbar }}
     </header>
-    <main id="swup" class="transition-fade">
-        <div class="horizontal-margins-lg">
+    
+    <main id="swup" class="transition-fade" role="main" aria-label="Main content">
+        <div id="main-content">
             {{{body}}}
         </div>
     </main>
-    <footer>
+    
+    <footer role="contentinfo">
         {{> footer }}
     </footer>
 </body>
