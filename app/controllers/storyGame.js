@@ -1,6 +1,28 @@
-const rooms = {}; // In-memory storage for now
 const { renderMarkdown } = require('../helpers/sanitizeMarkdown');
 const { sendStoryGameToDiscord } = require('../helpers/sendToDiscord');
+
+const rooms = {}; // In-memory storage for now
+
+// Periodic safety sweep: remove finished games older than 60 minutes
+const ONE_HOUR = 60 * 60 * 1000;
+const ONE_DAY = 24 * ONE_HOUR;
+setInterval(() => {
+    const now = Date.now();
+    try {
+        for (const [code, room] of Object.entries(rooms)) {
+            if (room && room.state === 'finished') {
+                const completedAt = room.completedAt || 0;
+                if (now - completedAt > ONE_HOUR) {
+                    if (room.cleanupTimeout) clearTimeout(room.cleanupTimeout);
+                    delete rooms[code];
+                }
+            }
+        }
+    } catch (e) {
+        // Non-fatal; continue next sweep
+        console.error('StoryGame cleanup sweep error:', e && e.message ? e.message : e);
+    }
+}, ONE_DAY);
 
 function startTurn(room, code, io) {
     room.turnStartTime = Date.now();
@@ -70,6 +92,22 @@ function finishTurn(room, code, io) {
 
         // Initialize per-story like/dislike vote buckets
         room.resultVotes = room.stories.map(() => ({ likes: [], dislikes: [] }));
+
+        // Mark completion time and schedule cleanup to free memory after 60 minutes
+        room.completedAt = Date.now();
+        const completionMarker = room.completedAt;
+
+        // Clear any prior cleanup timer before scheduling a fresh one
+        if (room.cleanupTimeout) {
+            clearTimeout(room.cleanupTimeout);
+        }
+        room.cleanupTimeout = setTimeout(() => {
+            const current = rooms[code];
+            // Only delete if the room still represents the same finished game
+            if (current && current.state === 'finished' && current.completedAt === completionMarker) {
+                delete rooms[code];
+            }
+        }, ONE_HOUR);
 
         io.to(code).emit("game-finished");
         try {
