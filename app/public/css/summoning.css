@@ -1,0 +1,132 @@
+/* Summoning feature styles */
+#summon-container {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 1000;
+    pointer-events: none;
+    /* allow button to handle clicks */
+}
+
+#summon-btn {
+    pointer-events: auto;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.summon-circle {
+    width: 72px;
+    height: 72px;
+    display: block;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+.summon-cat {
+    position: absolute;
+    left: 16px;
+    bottom: 8px;
+    width: 96px;
+    transform: translateY(110%);
+    opacity: 0;
+    transition: transform 3s ease-in-out, opacity 2s ease-in;
+    pointer-events: none;
+}
+
+.summon-cat.rise {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Center-stage mega cat after fade-in complete */
+.summon-cat.center-stage {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(80vmin, 900px);
+    max-height: 90vh;
+    z-index: 2000;
+    transition: transform 600ms ease, width 600ms ease;
+}
+
+/* Spinning cat while the song plays */
+.summon-cat.center-stage.spin {
+    animation: catSpin 0.5s linear infinite;
+}
+
+@keyframes catSpin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+/* Fade out on cleanup */
+.fade-out {
+    opacity: 0 !important;
+    transition: opacity 500ms ease;
+}
+
+/* Rave background effect */
+@keyframes raveFlash {
+    0% {
+        background-color: #ff0040;
+    }
+
+    10% {
+        background-color: #ff7a00;
+    }
+
+    20% {
+        background-color: #ffee00;
+    }
+
+    30% {
+        background-color: #9dff00;
+    }
+
+    40% {
+        background-color: #00ffea;
+    }
+
+    50% {
+        background-color: #0066ff;
+    }
+
+    60% {
+        background-color: #7a00ff;
+    }
+
+    70% {
+        background-color: #ff00c8;
+    }
+
+    80% {
+        background-color: #ff0040;
+    }
+
+    90% {
+        background-color: #00ff88;
+    }
+
+    100% {
+        background-color: #ff7a00;
+    }
+}
+
+/* Override the gradient background so the flash is visible; let animation set background-color */
+body.rave-bg {
+    background-image: none !important;
+    animation: raveFlash 4s steps(1, end) infinite;
+}
