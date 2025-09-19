@@ -12,18 +12,21 @@
         if (!container || !btn || !cat || !audio) return;
 
         let started = false;
-        let fadeTimer = null;
+        let fadeRAF = null;
         let fadeComplete = false;
+        let ended = false;
+        let audioCtx = null;
+        let gainNode = null;
 
         function stopFade() {
-            if (fadeTimer) {
-                clearInterval(fadeTimer);
-                fadeTimer = null;
+            if (fadeRAF !== null) {
+                cancelAnimationFrame(fadeRAF);
+                fadeRAF = null;
             }
         }
 
         function startRave() {
-            if (fadeComplete) return;
+            if (fadeComplete || ended) return;
             fadeComplete = true;
             // Center and enlarge the cat
             cat.classList.add('center-stage');
@@ -34,6 +37,7 @@
         }
 
         function cleanup() {
+            ended = true;
             // stop any fade and remove rave effect
             stopFade();
             document.body.classList.remove('rave-bg');
@@ -57,14 +61,30 @@
                 cat.classList.add('rise');
             });
 
-            // set initial volume (0) and fade to max 0.3 over 33s
+            // try to set initial volume (some browsers ignore this)
             try { audio.volume = 0.0; } catch (_) { }
+
+            // Web Audio API for reliable gain control on iOS
+            try {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                if (Ctx) {
+                    audioCtx = new Ctx();
+                    if (audioCtx.state === 'suspended' && audioCtx.resume) {
+                        audioCtx.resume().catch(() => { /* ignore */ });
+                    }
+                    const src = audioCtx.createMediaElementSource(audio);
+                    gainNode = audioCtx.createGain();
+                    gainNode.gain.value = 0.0;
+                    src.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                }
+            } catch (_) {
+                audioCtx = null;
+                gainNode = null;
+            }
 
             const targetVol = 0.3;
             const fadeDurationMs = 33000; // 33 seconds
-            const stepMs = 100; // update every 100ms
-            const steps = Math.max(1, Math.floor(fadeDurationMs / stepMs));
-            const increment = targetVol / steps;
 
             // play audio
             const playPromise = audio.play();
@@ -74,20 +94,25 @@
                 });
             }
 
-            // begin fade-in ramp
-            stopFade();
-            fadeTimer = setInterval(() => {
-                try {
-                    const next = Math.min(targetVol, (audio.volume || 0) + increment);
-                    audio.volume = next;
-                    if (next >= targetVol) {
-                        stopFade();
-                        startRave();
-                    }
-                } catch (_) {
-                    stopFade();
+            // time-based fade independent of audio.volume reads
+            const startTime = performance.now();
+            const tick = (now) => {
+                if (ended) return; // stop if ended
+                const elapsed = now - startTime;
+                const fraction = Math.min(1, elapsed / fadeDurationMs);
+                const vol = targetVol * fraction;
+                try { audio.volume = vol; } catch (_) { }
+                if (gainNode) {
+                    try { gainNode.gain.value = vol; } catch (_) { }
                 }
-            }, stepMs);
+                if (fraction >= 1) {
+                    stopFade();
+                    startRave();
+                    return;
+                }
+                fadeRAF = requestAnimationFrame(tick);
+            };
+            fadeRAF = requestAnimationFrame(tick);
 
             audio.addEventListener('ended', () => {
                 cleanup();
