@@ -1,13 +1,427 @@
-/* Story Game shared styles */
+/* Results page header */
+.results-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.results-title {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.results-subtitle {
+    font-size: 1.1rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Stories container */
+.stories-container {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Story cards */
+.story-card {
+    background: var(--bg-surface);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.story-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.story-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
+    background-size: 300% 300%;
+    animation: gradientShift 6s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Story header */
+.story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.story-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #667eea;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.story-rank {
+    font-size: 1.5rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Contributors section */
+.contributors-section {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+.contributors-label {
+    font-weight: bold;
+    color: #667eea;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.contributors-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.contributor-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.contributor-badge:hover {
+    transform: scale(1.05);
+}
+
+/* History controls */
+.history-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hist-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+}
+
+.hist-btn:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(238, 90, 36, 0.4);
+}
+
+.hist-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.hist-icon {
+    font-size: 1rem;
+}
+
+.hist-status {
+    font-weight: 500;
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+/* Story content */
+.story-content-wrapper {
+    margin: 1.5rem 0;
+}
+
 .resultsBox {
     background: var(--bg-surface);
     color: var(--text-color);
-    font-size: 1em;
-    padding: 1em;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    box-shadow: var(--card-shadow);
+    font-size: 1.05rem;
+    padding: 1.5rem;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
     word-break: break-word;
+    line-height: 1.6;
+    position: relative;
+    background-image:
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 107, 107, 0.1) 0%, transparent 50%);
+}
+
+/* Vote section */
+.vote-section {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.vote-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.vote-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.vote-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+
+.vote-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-like {
+    background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+    color: white;
+    box-shadow: 0 4px 15px rgba(58, 123, 213, 0.3);
+}
+
+.btn-like:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(58, 123, 213, 0.4);
+}
+
+.btn-dislike {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+}
+
+.btn-dislike:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(238, 90, 36, 0.4);
+}
+
+.vote-emoji {
+    font-size: 1.2rem;
+    z-index: 1;
+    position: relative;
+}
+
+.vote-text {
+    z-index: 1;
+    position: relative;
+}
+
+/* Vote results */
+.vote-results {
+    display: grid;
+    gap: 1rem;
+}
+
+.vote-group {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.vote-group:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(1.02);
+}
+
+.vote-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.likes-group .vote-header {
+    color: #27ae60;
+}
+
+.dislikes-group .vote-header {
+    color: #e74c3c;
+}
+
+.vote-icon {
+    font-size: 1.1rem;
+}
+
+.vote-list {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    min-height: 1.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.vote-list:not(:empty) {
+    opacity: 1;
+}
+
+/* Back to games button */
+.back-to-games {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.back-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.back-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.back-btn:hover::before {
+    left: 100%;
+}
+
+.back-icon {
+    font-size: 1.3rem;
+    animation: gameIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes gameIconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.back-text {
+    position: relative;
+    z-index: 1;
 }
 
 /* Writing textarea */
@@ -43,4 +457,76 @@ body.dark-theme .story-textarea:focus {
     color: var(--text-dim);
     font-size: 0.9em;
     margin: 0.25em 0 0.75em;
+}
+
+/* Dark theme adjustments */
+body.dark-theme .results-header {
+    background: linear-gradient(135deg, #4c63d2 0%, #5a4a78 100%);
+}
+
+body.dark-theme .story-card {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .story-card:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme .contributors-section {
+    background: rgba(102, 126, 234, 0.2);
+}
+
+body.dark-theme .history-controls {
+    background: rgba(30, 31, 34, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .hist-status {
+    background: rgba(30, 31, 34, 0.9);
+    color: var(--text-color);
+}
+
+body.dark-theme .vote-section {
+    background: linear-gradient(135deg, rgba(30, 31, 34, 0.6), rgba(30, 31, 34, 0.3));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .vote-group {
+    background: rgba(30, 31, 34, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .vote-group:hover {
+    background: rgba(30, 31, 34, 0.9);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .results-title {
+        font-size: 2rem;
+    }
+
+    .story-card {
+        padding: 1rem;
+    }
+
+    .vote-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .vote-btn {
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
+    }
+
+    .contributors-list {
+        justify-content: center;
+    }
+
+    .history-controls {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 }

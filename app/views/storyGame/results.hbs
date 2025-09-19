@@ -1,40 +1,92 @@
-<h1>Final Stories</h1>
+<div class="results-header">
+    <h1 class="results-title">🎭 Final Stories</h1>
+    <p class="results-subtitle">The collaborative tales have been told! Cast your votes below.</p>
+</div>
 
-{{#each stories}}
-<div class="story" data-story-index="{{@index}}">
-    <h2>Story #{{add @index 1}}</h2>
-    <p><strong>Contributors (final order):</strong> {{#each this.authors}}{{this}}{{#unless @last}},
-        {{/unless}}{{/each}}</p>
-    {{#if ../keepHistory}}
-    <div class="history-controls" data-controls-for="{{@index}}" style="margin:6px 0;">
-        <button class="hist-prev" title="View earlier turn">&larr;</button>
-        <span class="hist-status">Final ({{this.authors.length}} / {{this.authors.length}} turns)</span>
-        <button class="hist-next" title="View later turn" {{#unless
-            this.history.length}}disabled{{/unless}}>&rarr;</button>
-    </div>
-    {{/if}}
-    <div class="resultsBox story-markdown story-content">{{{markdown this.content}}}</div>
-    <div class="vote-panel" data-story="{{@index}}" style="margin-top:8px;">
-        <button class="btn-like">👍 Like</button>
-        <button class="btn-dislike">👎 Dislike</button>
-        <div class="vote-lists" style="margin-top:6px; font-size:0.95em;">
-            <div><strong>Likes (<span class="likes-count">0</span>):</strong> <span class="likes-list"></span></div>
-            <div><strong>Dislikes (<span class="dislikes-count">0</span>):</strong> <span class="dislikes-list"></span>
+<div class="stories-container">
+    {{#each stories}}
+    <div class="story-card" data-story-index="{{@index}}">
+        <div class="story-header">
+            <div class="story-number">Story #{{add @index 1}}</div>
+            <div class="story-rank">📖</div>
+        </div>
+
+        <div class="contributors-section">
+            <span class="contributors-label">✨ Contributors:</span>
+            <div class="contributors-list">
+                {{#each this.authors}}
+                <span class="contributor-badge">{{this}}</span>{{#unless @last}} {{/unless}}
+                {{/each}}
             </div>
         </div>
-        <script type="application/json" class="story-votes">{{{JSONstringify (lookup ../votes @index)}}}</script>
-    </div>
-    {{#if ../keepHistory}}
-    <script type="application/json" class="story-history">{{{JSONstringify this.history}}}</script>
-    {{/if}}
-</div>
-{{/each}}
 
-<a href="/games">Back to Games</a>
+        {{#if ../keepHistory}}
+        <div class="history-controls" data-controls-for="{{@index}}">
+            <button class="hist-btn hist-prev" title="View earlier turn">
+                <span class="hist-icon">⬅️</span>
+            </button>
+            <span class="hist-status">Final ({{this.authors.length}} / {{this.authors.length}} turns)</span>
+            <button class="hist-btn hist-next" title="View later turn" {{#unless
+                this.history.length}}disabled{{/unless}}>
+                <span class="hist-icon">➡️</span>
+            </button>
+        </div>
+        {{/if}}
+
+        <div class="story-content-wrapper">
+            <div class="resultsBox story-markdown story-content">{{{markdown this.content}}}</div>
+        </div>
+
+        <div class="vote-section" data-story="{{@index}}">
+            <div class="vote-buttons">
+                <button class="vote-btn btn-like">
+                    <span class="vote-emoji">👍</span>
+                    <span class="vote-text">Love it!</span>
+                </button>
+                <button class="vote-btn btn-dislike">
+                    <span class="vote-emoji">👎</span>
+                    <span class="vote-text">Not for me</span>
+                </button>
+            </div>
+
+            <div class="vote-results">
+                <div class="vote-group likes-group">
+                    <div class="vote-header">
+                        <span class="vote-icon">💚</span>
+                        <span class="vote-label">Loves (<span class="likes-count">0</span>)</span>
+                    </div>
+                    <div class="vote-list likes-list"></div>
+                </div>
+
+                <div class="vote-group dislikes-group">
+                    <div class="vote-header">
+                        <span class="vote-icon">💔</span>
+                        <span class="vote-label">Not their cup of tea (<span class="dislikes-count">0</span>)</span>
+                    </div>
+                    <div class="vote-list dislikes-list"></div>
+                </div>
+            </div>
+
+            <script type="application/json" class="story-votes">{{{JSONstringify (lookup ../votes @index)}}}</script>
+        </div>
+
+        {{#if ../keepHistory}}
+        <script type="application/json" class="story-history">{{{JSONstringify this.history}}}</script>
+        {{/if}}
+    </div>
+    {{/each}}
+</div>
+
+<div class="back-to-games">
+    <a href="/games" class="back-btn">
+        <span class="back-icon">🎮</span>
+        <span class="back-text">Back to Games</span>
+    </a>
+</div>
 
 {{#if keepHistory}}
 <script>
-    document.querySelectorAll('.story').forEach(storyEl => {
+    document.querySelectorAll('.story-card').forEach(storyEl => {
         const historyScript = storyEl.querySelector('.story-history');
         if (!historyScript) return;
         let history; try { history = JSON.parse(historyScript.textContent || '[]'); } catch (e) { history = []; }
@@ -91,7 +143,7 @@
         socket.emit('join-room', code);
 
         // Wire buttons
-        document.querySelectorAll('.vote-panel').forEach(panel => {
+        document.querySelectorAll('.vote-section').forEach(panel => {
             const storyIndex = parseInt(panel.getAttribute('data-story'), 10);
             const likeBtn = panel.querySelector('.btn-like');
             const dislikeBtn = panel.querySelector('.btn-dislike');
