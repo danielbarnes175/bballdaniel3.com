@@ -67,9 +67,11 @@ function finishTurn(room, code, io) {
         }, room.settings.readingPhaseTime * 1000);
     } else if (room.currentTurn >= room.players.length) {
         room.state = "finished";
-        io.to(code).emit("game-finished");
 
-        // Fire-and-forget: send final stories to Discord
+        // Initialize per-story like/dislike vote buckets
+        room.resultVotes = room.stories.map(() => ({ likes: [], dislikes: [] }));
+
+        io.to(code).emit("game-finished");
         try {
             sendStoryGameToDiscord({
                 code,
@@ -78,7 +80,6 @@ function finishTurn(room, code, io) {
                 keepHistory: room.settings.keepHistory
             });
         } catch (e) {
-            // Non-fatal
             console.error('Discord notify failed:', e && e.message ? e.message : e);
         }
     } else {
@@ -318,8 +319,65 @@ module.exports = {
 
         res.render("storyGame/results", {
             code,
+            username: req.query.username || '',
             stories: room.stories,
-            keepHistory: room.settings.keepHistory
+            keepHistory: room.settings.keepHistory,
+            votes: room.resultVotes || room.stories.map(() => ({ likes: [], dislikes: [] }))
         });
+    },
+
+    // Record a like/dislike for a story on the results screen
+    resultsVote: (req, res) => {
+        const code = req.params.code.toUpperCase();
+        const room = rooms[code];
+        const io = req.app.get('io');
+        if (!room || room.state !== "finished") return res.status(404).send("Voting unavailable");
+
+        const { username, storyIndex, voteType } = req.body || {};
+        const sIdx = parseInt(storyIndex);
+        if (!username || !Number.isInteger(sIdx) || sIdx < 0 || sIdx >= room.stories.length) {
+            return res.status(400).send("Bad request");
+        }
+        // Must be a known player (prevents randoms)
+        const isPlayer = room.players.some(p => p.name === username);
+        if (!isPlayer) return res.status(403).send("Not a player");
+
+        if (!room.resultVotes) {
+            room.resultVotes = room.stories.map(() => ({ likes: [], dislikes: [] }));
+        }
+        const bucket = room.resultVotes[sIdx];
+        if (!bucket) return res.status(400).send("Invalid story");
+
+        // Ensure arrays exist
+        bucket.likes = Array.isArray(bucket.likes) ? bucket.likes : [];
+        bucket.dislikes = Array.isArray(bucket.dislikes) ? bucket.dislikes : [];
+
+        function remove(arr, name) {
+            const i = arr.indexOf(name);
+            if (i !== -1) arr.splice(i, 1);
+        }
+
+        if (voteType === 'like') {
+            // Toggle like; mutually exclusive with dislike
+            if (bucket.likes.includes(username)) {
+                remove(bucket.likes, username);
+            } else {
+                remove(bucket.dislikes, username);
+                bucket.likes.push(username);
+            }
+        } else if (voteType === 'dislike') {
+            if (bucket.dislikes.includes(username)) {
+                remove(bucket.dislikes, username);
+            } else {
+                remove(bucket.likes, username);
+                bucket.dislikes.push(username);
+            }
+        } else {
+            return res.status(400).send("Unknown vote type");
+        }
+
+        const payload = { storyIndex: sIdx, likes: bucket.likes, dislikes: bucket.dislikes };
+        io.to(code).emit('results-vote-update', payload);
+        res.json(payload);
     }
 };

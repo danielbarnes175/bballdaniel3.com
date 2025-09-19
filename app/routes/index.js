@@ -43,6 +43,8 @@ module.exports = function (app) {
         .post(gameController.voteReadingPhase);
     app.route('/games/story/:code/results')
         .get(gameController.results);
+    app.route('/games/story/:code/results/vote')
+        .post(gameController.resultsVote);
 
     app.route('/health')
         .get((req, res) => {

@@ -14,6 +14,16 @@
     </div>
     {{/if}}
     <div class="resultsBox story-markdown story-content">{{{markdown this.content}}}</div>
+    <div class="vote-panel" data-story="{{@index}}" style="margin-top:8px;">
+        <button class="btn-like">👍 Like</button>
+        <button class="btn-dislike">👎 Dislike</button>
+        <div class="vote-lists" style="margin-top:6px; font-size:0.95em;">
+            <div><strong>Likes (<span class="likes-count">0</span>):</strong> <span class="likes-list"></span></div>
+            <div><strong>Dislikes (<span class="dislikes-count">0</span>):</strong> <span class="dislikes-list"></span>
+            </div>
+        </div>
+        <script type="application/json" class="story-votes">{{{JSONstringify (lookup ../votes @index)}}}</script>
+    </div>
     {{#if ../keepHistory}}
     <script type="application/json" class="story-history">{{{JSONstringify this.history}}}</script>
     {{/if}}
@@ -71,3 +81,63 @@
     });
 </script>
 {{/if}}
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    (function () {
+        const code = "{{code}}";
+        const username = "{{username}}";
+        const socket = io();
+        socket.emit('join-room', code);
+
+        // Wire buttons
+        document.querySelectorAll('.vote-panel').forEach(panel => {
+            const storyIndex = parseInt(panel.getAttribute('data-story'), 10);
+            const likeBtn = panel.querySelector('.btn-like');
+            const dislikeBtn = panel.querySelector('.btn-dislike');
+            const likesList = panel.querySelector('.likes-list');
+            const dislikesList = panel.querySelector('.dislikes-list');
+            const likesCount = panel.querySelector('.likes-count');
+            const dislikesCount = panel.querySelector('.dislikes-count');
+            // Load initial from embedded JSON
+            const votesScript = panel.querySelector('.story-votes');
+            let initial = { likes: [], dislikes: [] };
+            if (votesScript) {
+                try { initial = JSON.parse(votesScript.textContent || '{}'); } catch (e) { initial = { likes: [], dislikes: [] }; }
+            }
+
+            function updateLocal({ likes, dislikes }) {
+                const L = likes || [];
+                const D = dislikes || [];
+                likesList.textContent = L.join(', ');
+                dislikesList.textContent = D.join(', ');
+                if (likesCount) likesCount.textContent = L.length;
+                if (dislikesCount) dislikesCount.textContent = D.length;
+            }
+
+            // Initialize with server state
+            updateLocal(initial);
+
+            async function sendVote(voteType) {
+                try {
+                    const res = await fetch(`/games/story/${code}/results/vote`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, storyIndex, voteType })
+                    });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data.storyIndex === storyIndex) updateLocal(data);
+                } catch (e) { /* ignore */ }
+            }
+
+            likeBtn && likeBtn.addEventListener('click', () => sendVote('like'));
+            dislikeBtn && dislikeBtn.addEventListener('click', () => sendVote('dislike'));
+
+            socket.on('results-vote-update', (payload) => {
+                if (!payload || payload.storyIndex !== storyIndex) return;
+                updateLocal(payload);
+            });
+        });
+    })();
+</script>
