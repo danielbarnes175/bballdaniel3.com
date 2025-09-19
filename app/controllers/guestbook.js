@@ -44,7 +44,7 @@ exports.submitGuestbookEntry = (req, res) => {
     const newEntry = {
         name,
         message,
-        date: new Date().toLocaleString()
+        date: new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
     }
 
     sendToDiscord(newEntry);
