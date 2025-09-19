@@ -2,6 +2,7 @@
 (function () {
     const STORAGE_KEY = 'site-theme';
     const body = document.body;
+    const root = document.documentElement;
 
     function systemPrefersDark() {
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -10,9 +11,11 @@
     function applyTheme(theme) {
         if (theme === 'dark') {
             body.classList.add('dark-theme');
+            root.classList.add('dark-theme');
             toggleBtn && (toggleBtn.textContent = '☀️');
         } else {
             body.classList.remove('dark-theme');
+            root.classList.remove('dark-theme');
             toggleBtn && (toggleBtn.textContent = '🌙');
         }
     }

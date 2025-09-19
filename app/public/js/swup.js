@@ -9,7 +9,8 @@ const options = {
             animateScroll: true,
             doScrollingRightAway: true,
             scrollContainers: `[data-swup-scroll-container]`,
-        })
+        }),
+        new SwupScriptsPlugin()
     ]
 };
 

@@ -37,6 +37,8 @@ body {
 }
 
 /* Dark theme overrides */
+/* Support both html(:root) and body to minimize FOUC */
+:root.dark-theme,
 body.dark-theme {
     --bg-gradient-start: #0f2027;
     --bg-gradient-end: #203a43;
@@ -59,6 +61,14 @@ body.dark-theme {
     --guestbook-btn: #336845;
     --guestbook-btn-hover: #21402c;
     --mde-toolbar-background-color: #333333;
+}
+
+/* Inform UA about color scheme for form controls/scrollbars */
+:root.dark-theme {
+    color-scheme: dark;
+}
+:root:not(.dark-theme) {
+    color-scheme: light;
 }
 
 
