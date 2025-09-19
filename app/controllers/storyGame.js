@@ -1,5 +1,6 @@
 const rooms = {}; // In-memory storage for now
 const { renderMarkdown } = require('../helpers/sanitizeMarkdown');
+const { sendStoryGameToDiscord } = require('../helpers/sendToDiscord');
 
 function startTurn(room, code, io) {
     room.turnStartTime = Date.now();
@@ -67,6 +68,19 @@ function finishTurn(room, code, io) {
     } else if (room.currentTurn >= room.players.length) {
         room.state = "finished";
         io.to(code).emit("game-finished");
+
+        // Fire-and-forget: send final stories to Discord
+        try {
+            sendStoryGameToDiscord({
+                code,
+                stories: room.stories,
+                players: room.players,
+                keepHistory: room.settings.keepHistory
+            });
+        } catch (e) {
+            // Non-fatal
+            console.error('Discord notify failed:', e && e.message ? e.message : e);
+        }
     } else {
         startTurn(room, code, io); // Schedule next turn
     }
