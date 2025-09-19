@@ -25,8 +25,8 @@ module.exports = function (app) {
         .get(controller.tag);
     app.route('/privacy')
         .get(controller.privacy);
-    app.route('/projects')
-        .get(controller.projects);
+    // app.route('/projects')
+    //     .get(controller.projects);
 
     app.route('/games/story/create')
         .get(gameController.createRoom);
