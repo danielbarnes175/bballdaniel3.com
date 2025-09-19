@@ -12,17 +12,18 @@
     <link rel="stylesheet" href="/css/main.css">
     <script>(function () { try { var t = localStorage.getItem('site-theme'); if (!t) { if (window.matchMedia('(prefers-color-scheme: dark)').matches) { t = 'dark'; } } if (t === 'dark') { document.addEventListener('DOMContentLoaded', function () { document.body.classList.add('dark-theme'); }); } } catch (e) { } })();</script>
     <script defer src="https://unpkg.com/swup@4"></script>
-    <script src="https://unpkg.com/@swup/forms-plugin@3"></script>
-    <script defer type="module" src="/swup.js"></script>
+    <script defer src="https://unpkg.com/@swup/forms-plugin@3"></script>
+    <script defer src="https://unpkg.com/@swup/head-plugin@2"></script>
+    <script defer src="https://unpkg.com/@swup/scroll-plugin@4"></script>
+    <script defer type="module" src="/js/swup.js"></script>
     <script defer src="/js/theme.js"></script>
-    <script defer src="/js/footer.js"></script>
 </head>
 
-<body class="main-background">
+<body id="swup" class="main-background">
     <header>
         {{> navbar }}
     </header>
-    <main id="swup" class="transition-fade">
+    <main class="transition-fade transition-slide">
         <div class="blog-background horizontal-margins-lg">
             {{{body}}}
         </div>

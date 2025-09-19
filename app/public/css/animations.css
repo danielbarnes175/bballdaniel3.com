@@ -8,13 +8,13 @@ html.is-animating .transition-fade {
 }
 
 .transition-slide {
-    transform: translateX(0);
-    transform-origin: right;
-    transition: 500ms cubic-bezier(.28,.28,.49,1.05);
+    transform: translateY(0);
+    transform-origin: bottom;
+    transition: 500ms cubic-bezier(.28, .28, .49, 1.05);
 }
 
 html.is-animating .transition-slide {
-    transform: translateX(50%);
+    transform: translateY(50%);
 }
 
 html.is-leaving .transition-slide {
