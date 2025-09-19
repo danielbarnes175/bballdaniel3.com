@@ -3,77 +3,118 @@
     <p class="results-subtitle">The collaborative tales have been told! Cast your votes below.</p>
 </div>
 
-<div class="stories-container">
-    {{#each stories}}
-    <div class="story-card" data-story-index="{{@index}}">
-        <div class="story-header">
-            <div class="story-number">Story #{{add @index 1}}</div>
+<div class="carousel-container">
+    <div class="carousel-header">
+        <div class="story-counter">
+            <span class="current-story">1</span> of <span class="total-stories">{{stories.length}}</span>
         </div>
-
-        <div class="contributors-section">
-            <span class="contributors-label">✨ Contributors:</span>
-            <div class="contributors-list">
-                {{#each this.authors}}
-                <span class="contributor-badge">{{this}}</span>{{#unless @last}} {{/unless}}
-                {{/each}}
-            </div>
-        </div>
-
-        {{#if ../keepHistory}}
-        <div class="history-controls" data-controls-for="{{@index}}">
-            <button class="hist-btn hist-prev" title="View earlier turn">
-                <span class="hist-icon">⬅️</span>
+        <div class="carousel-controls">
+            <button class="carousel-btn prev-btn" title="Previous story">
+                <span class="carousel-icon">⬅️</span>
             </button>
-            <span class="hist-status">Final ({{this.authors.length}} / {{this.authors.length}} turns)</span>
-            <button class="hist-btn hist-next" title="View later turn" {{#unless
-                this.history.length}}disabled{{/unless}}>
-                <span class="hist-icon">➡️</span>
+            <button class="carousel-btn next-btn" title="Next story">
+                <span class="carousel-icon">➡️</span>
             </button>
         </div>
-        {{/if}}
-
-        <div class="story-content-wrapper">
-            <div class="resultsBox story-markdown story-content">{{{markdown this.content}}}</div>
-        </div>
-
-        <div class="vote-section" data-story="{{@index}}">
-            <div class="vote-buttons">
-                <button class="vote-btn btn-like">
-                    <span class="vote-emoji">👍</span>
-                    <span class="vote-text">Love it!</span>
-                </button>
-                <button class="vote-btn btn-dislike">
-                    <span class="vote-emoji">👎</span>
-                    <span class="vote-text">Not for me</span>
-                </button>
-            </div>
-
-            <div class="vote-results">
-                <div class="vote-group likes-group">
-                    <div class="vote-header">
-                        <span class="vote-icon">💚</span>
-                        <span class="vote-label">Loves (<span class="likes-count">0</span>)</span>
-                    </div>
-                    <div class="vote-list likes-list"></div>
-                </div>
-
-                <div class="vote-group dislikes-group">
-                    <div class="vote-header">
-                        <span class="vote-icon">💔</span>
-                        <span class="vote-label">Not their cup of tea (<span class="dislikes-count">0</span>)</span>
-                    </div>
-                    <div class="vote-list dislikes-list"></div>
-                </div>
-            </div>
-
-            <script type="application/json" class="story-votes">{{{JSONstringify (lookup ../votes @index)}}}</script>
-        </div>
-
-        {{#if ../keepHistory}}
-        <script type="application/json" class="story-history">{{{JSONstringify this.history}}}</script>
-        {{/if}}
     </div>
-    {{/each}}
+
+    <div class="carousel-wrapper">
+        <div class="carousel-track" style="transform: translateX(0%);">
+            {{#each stories}}
+            <div class="story-card" data-story-index="{{@index}}">
+                <div class="story-header">
+                    <div class="story-number">Story #{{add @index 1}}</div>
+                </div>
+
+                <div class="contributors-section">
+                    <span class="contributors-label">✨ Contributors:</span>
+                    <div class="contributors-list">
+                        {{#each this.authors}}
+                        <span class="contributor-badge">{{this}}</span>{{#unless @last}} {{/unless}}
+                        {{/each}}
+                    </div>
+                </div>
+
+                {{#if ../keepHistory}}
+                <div class="history-controls" data-controls-for="{{@index}}">
+                    <button class="hist-btn hist-prev" title="View earlier turn">
+                        <span class="hist-icon">⬅️</span>
+                    </button>
+                    <span class="hist-status">Final ({{this.authors.length}} / {{this.authors.length}} turns)</span>
+                    <button class="hist-btn hist-next" title="View later turn" {{#unless
+                        this.history.length}}disabled{{/unless}}>
+                        <span class="hist-icon">➡️</span>
+                    </button>
+                </div>
+                {{/if}}
+
+                <div class="story-content-wrapper">
+                    <div class="resultsBox story-markdown story-content">{{{markdown this.content}}}</div>
+                </div>
+
+                <div class="vote-section" data-story="{{@index}}">
+                    <div class="vote-buttons">
+                        <button class="vote-btn btn-like">
+                            <span class="vote-emoji">👍</span>
+                            <span class="vote-text">Love it!</span>
+                        </button>
+                        <button class="vote-btn btn-dislike">
+                            <span class="vote-emoji">👎</span>
+                            <span class="vote-text">Not for me</span>
+                        </button>
+                    </div>
+
+                    <div class="vote-results">
+                        <div class="vote-group likes-group">
+                            <div class="vote-header">
+                                <span class="vote-icon">💚</span>
+                                <span class="vote-label">Loves (<span class="likes-count">0</span>)</span>
+                            </div>
+                            <div class="vote-list likes-list"></div>
+                        </div>
+
+                        <div class="vote-group dislikes-group">
+                            <div class="vote-header">
+                                <span class="vote-icon">💔</span>
+                                <span class="vote-label">Not their cup of tea (<span
+                                        class="dislikes-count">0</span>)</span>
+                            </div>
+                            <div class="vote-list dislikes-list"></div>
+                        </div>
+                    </div>
+
+                    <script type="application/json"
+                        class="story-votes">{{{JSONstringify (lookup ../votes @index)}}}</script>
+                </div>
+
+                {{#if ../keepHistory}}
+                <script type="application/json" class="story-history">{{{JSONstringify this.history}}}</script>
+                {{/if}}
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="carousel-dots">
+        {{#each stories}}
+        <button class="carousel-dot {{#if @first}}active{{/if}}" data-slide="{{@index}}"
+            title="Go to story {{add @index 1}}"></button>
+        {{/each}}
+    </div>
+
+    <div class="carousel-footer">
+        <div class="story-counter">
+            <span class="current-story-bottom">1</span> of <span class="total-stories">{{stories.length}}</span>
+        </div>
+        <div class="carousel-controls">
+            <button class="carousel-btn prev-btn-bottom" title="Previous story">
+                <span class="carousel-icon">⬅️</span>
+            </button>
+            <button class="carousel-btn next-btn-bottom" title="Next story">
+                <span class="carousel-icon">➡️</span>
+            </button>
+        </div>
+    </div>
 </div>
 
 <div class="back-to-games">
@@ -132,6 +173,197 @@
     });
 </script>
 {{/if}}
+
+<script>
+    // Carousel functionality
+    (function () {
+        const carouselWrapper = document.querySelector('.carousel-wrapper');
+        const carouselTrack = document.querySelector('.carousel-track');
+        const carouselDots = document.querySelectorAll('.carousel-dot');
+
+        // Top navigation buttons
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const currentStorySpan = document.querySelector('.current-story');
+
+        // Bottom navigation buttons
+        const prevBtnBottom = document.querySelector('.prev-btn-bottom');
+        const nextBtnBottom = document.querySelector('.next-btn-bottom');
+        const currentStorySpanBottom = document.querySelector('.current-story-bottom');
+
+        const storyCards = document.querySelectorAll('.story-card');
+        const totalStories = storyCards.length;
+
+        let currentSlide = 0;
+
+        function scrollToTop() {
+            // Small delay to ensure height animation starts first
+            setTimeout(() => {
+                // Try scrolling to the results header first
+                const resultsHeader = document.querySelector('.results-header');
+                if (resultsHeader) {
+                    resultsHeader.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                    // Fallback to window scroll
+                    if ('scrollBehavior' in document.documentElement.style) {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        // Fallback for older browsers
+                        window.scrollTo(0, 0);
+                    }
+                }
+            }, 100);
+        }
+
+        function updateCarouselHeight() {
+            if (storyCards[currentSlide]) {
+                const currentCard = storyCards[currentSlide];
+
+                // Force the card to have auto height temporarily to get true content height
+                const originalHeight = carouselWrapper.style.height;
+                carouselWrapper.style.height = 'auto';
+
+                // Wait a frame for the layout to settle
+                requestAnimationFrame(() => {
+                    // Get the natural height of the current card's content
+                    const cardHeight = currentCard.offsetHeight;
+
+                    // Set the wrapper height to exactly match the current card
+                    carouselWrapper.style.height = `${cardHeight}px`;
+                });
+            }
+        }
+
+        function updateCarousel() {
+            // Move the track
+            carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // Update counters (both top and bottom)
+            currentStorySpan.textContent = currentSlide + 1;
+            if (currentStorySpanBottom) currentStorySpanBottom.textContent = currentSlide + 1;
+
+            // Update dots
+            carouselDots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            // Update button states (both top and bottom)
+            const isPrevDisabled = currentSlide === 0;
+            const isNextDisabled = currentSlide === totalStories - 1;
+
+            prevBtn.disabled = isPrevDisabled;
+            nextBtn.disabled = isNextDisabled;
+            if (prevBtnBottom) prevBtnBottom.disabled = isPrevDisabled;
+            if (nextBtnBottom) nextBtnBottom.disabled = isNextDisabled;
+
+            // Add visual feedback (both top and bottom)
+            prevBtn.style.opacity = isPrevDisabled ? '0.5' : '1';
+            nextBtn.style.opacity = isNextDisabled ? '0.5' : '1';
+            if (prevBtnBottom) prevBtnBottom.style.opacity = isPrevDisabled ? '0.5' : '1';
+            if (nextBtnBottom) nextBtnBottom.style.opacity = isNextDisabled ? '0.5' : '1';
+
+            // Update height dynamically with proper timing
+            requestAnimationFrame(() => {
+                updateCarouselHeight();
+            });
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = Math.max(0, Math.min(slideIndex, totalStories - 1));
+            updateCarousel();
+            scrollToTop();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalStories - 1) {
+                currentSlide++;
+                updateCarousel();
+                scrollToTop();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCarousel();
+                scrollToTop();
+            }
+        }
+
+        // Event listeners for top navigation
+        if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+        if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+
+        // Event listeners for bottom navigation
+        if (nextBtnBottom) nextBtnBottom.addEventListener('click', nextSlide);
+        if (prevBtnBottom) prevBtnBottom.addEventListener('click', prevSlide);
+
+        carouselDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => goToSlide(index));
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let startX = null;
+        let currentX = null;
+
+        carouselTrack.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        carouselTrack.addEventListener('touchmove', (e) => {
+            if (!startX) return;
+            currentX = e.touches[0].clientX;
+        });
+
+        carouselTrack.addEventListener('touchend', (e) => {
+            if (!startX || !currentX) return;
+
+            const diffX = startX - currentX;
+            const threshold = 50; // minimum swipe distance
+
+            if (Math.abs(diffX) > threshold) {
+                if (diffX > 0) {
+                    nextSlide(); // swipe left = next
+                } else {
+                    prevSlide(); // swipe right = previous
+                }
+            }
+
+            startX = null;
+            currentX = null;
+        });
+
+        // Initialize
+        updateCarousel();
+
+        // Ensure initial height is set correctly after page load
+        window.addEventListener('load', () => {
+            setTimeout(updateCarouselHeight, 50);
+        });
+
+        // Handle window resize to recalculate heights
+        window.addEventListener('resize', () => {
+            setTimeout(updateCarouselHeight, 100);
+        });
+    })();
+</script>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
