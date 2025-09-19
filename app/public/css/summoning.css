@@ -42,6 +42,8 @@
 .summon-cat.rise {
     transform: translateY(0);
     opacity: 1;
+    /* During random fade phase, position will be controlled by JS */
+    position: fixed;
 }
 
 /* Center-stage mega cat after fade-in complete */

@@ -161,6 +161,235 @@
             cat.classList.add('spin');
             // Flashing background
             document.body.classList.add('rave-bg');
+
+            // Start tracking for majestic float at 1:01
+            startMajesticFloatTracking();
+        }
+
+        let floatRAF = null;
+        let isFloating = false;
+        let isShaking = false;
+        let isViolentShaking = false;
+        let isStill = false;
+        let floatStartTime = 0;
+        let floatStartPos = { x: 0, y: 0 };
+        let floatEndPos = { x: 0, y: 0 };
+        let shakeStartTime = 0;
+
+        function startMajesticFloatTracking() {
+            const trackAnimations = () => {
+                if (ended) return;
+
+                const currentTime = audio.currentTime * 1000; // convert to milliseconds
+                const floatStartMs = 61000; // 1:01
+                const floatEndMs = 75000; // 1:15
+                const shakeStartMs = 75000; // 1:15
+                const shakeEndMs = 88000; // 1:28
+                const violentShakeStartMs = 88000; // 1:28
+                const violentShakeEndMs = 101000; // 1:41
+                const stillStartMs = 101000; // 1:41
+                const stillEndMs = 107000; // 1:47
+                const spinResumeMs = 107000; // 1:47
+
+                // Handle floating phase (1:01-1:15)
+                if (currentTime >= floatStartMs && currentTime <= floatEndMs && !isFloating) {
+                    startMajesticFloat();
+                } else if (currentTime > floatEndMs && isFloating) {
+                    endMajesticFloat();
+                }
+
+                // Handle gentle shake phase (1:15-1:28)
+                if (currentTime >= shakeStartMs && currentTime <= shakeEndMs && !isShaking) {
+                    startGentleShake();
+                } else if (currentTime > shakeEndMs && isShaking && !isViolentShaking) {
+                    endGentleShake();
+                }
+
+                // Handle violent shake phase (1:28-1:41)
+                if (currentTime >= violentShakeStartMs && currentTime <= violentShakeEndMs && !isViolentShaking) {
+                    startViolentShake();
+                } else if (currentTime > violentShakeEndMs && isViolentShaking) {
+                    endViolentShake();
+                }
+
+                // Handle still phase (1:41-1:47)
+                if (currentTime >= stillStartMs && currentTime <= stillEndMs && !isStill) {
+                    startStillPhase();
+                } else if (currentTime > stillEndMs && isStill) {
+                    endStillPhase();
+                }
+
+                // Resume spinning (1:47+)
+                if (currentTime >= spinResumeMs && !cat.classList.contains('spin') && !isFloating && !isShaking && !isViolentShaking && !isStill) {
+                    resumeSpinning();
+                }
+
+                // Update animations
+                if (isFloating) {
+                    updateMajesticFloat(currentTime - floatStartMs);
+                }
+                if (isShaking) {
+                    updateGentleShake(currentTime - shakeStartMs);
+                }
+                if (isViolentShaking) {
+                    updateViolentShake(currentTime - violentShakeStartMs);
+                }
+
+                floatRAF = requestAnimationFrame(trackAnimations);
+            };
+            floatRAF = requestAnimationFrame(trackAnimations);
+        }
+
+        function startMajesticFloat() {
+            if (isFloating) return;
+            isFloating = true;
+            floatStartTime = performance.now();
+
+            // Remove spinning animation
+            cat.classList.remove('spin');
+
+            // Calculate floating path (shorter, slower movement)
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const catWidth = 96;
+
+            // Shorter distance
+            floatStartPos.x = screenWidth * 0.05; // start 5% from left
+            floatStartPos.y = screenHeight * 0.3; // upper third of screen
+            floatEndPos.x = screenWidth * 0.3; // end at 60% across
+            floatEndPos.y = screenHeight * 0.25; // slightly higher end position
+
+            // Position cat at start
+            cat.style.left = floatStartPos.x + 'px';
+            cat.style.top = floatStartPos.y + 'px';
+            cat.style.transform = 'none'; // remove center-stage transform
+        }
+
+        function updateMajesticFloat(elapsedMs) {
+            const floatDuration = 14000; // 14 seconds (1:01 to 1:15) - back to original timing
+            const progress = Math.min(1, elapsedMs / floatDuration);
+
+            // Smooth easing function for majestic movement
+            const easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+            const easedProgress = easeInOutSine(progress);
+
+            // Calculate position
+            const x = floatStartPos.x + (floatEndPos.x - floatStartPos.x) * easedProgress;
+            const y = floatStartPos.y + (floatEndPos.y - floatStartPos.y) * easedProgress;
+
+            // Add gentle vertical floating motion
+            const floatOffset = Math.sin(elapsedMs * 0.002) * 15; // gentle up/down motion
+
+            cat.style.left = x + 'px';
+            cat.style.top = (y + floatOffset) + 'px';
+        }
+
+        function endMajesticFloat() {
+            if (!isFloating) return;
+            isFloating = false;
+
+            // Return to center stage but don't start spinning yet
+            cat.style.left = '';
+            cat.style.top = '';
+            cat.style.transform = '';
+            cat.classList.add('center-stage');
+            // Don't add spin class yet - will be handled by shake phases
+        }
+
+        function startGentleShake() {
+            if (isShaking) return;
+            isShaking = true;
+            shakeStartTime = performance.now();
+
+            // Remove spinning if present
+            cat.classList.remove('spin');
+
+            // Ensure center-stage positioning
+            if (!cat.classList.contains('center-stage')) {
+                cat.classList.add('center-stage');
+            }
+        }
+
+        function updateGentleShake(elapsedMs) {
+            // Very gentle shake - small amplitude, slow frequency
+            const shakeX = Math.sin(elapsedMs * 0.01) * 54; // 54px amplitude (4px + 50px)
+            const shakeY = Math.cos(elapsedMs * 0.012) * 53; // 53px amplitude (3px + 50px)
+
+            cat.style.transform = `translate(-50%, -50%) translate(${shakeX}px, ${shakeY}px)`;
+        }
+
+        function endGentleShake() {
+            if (!isShaking) return;
+            isShaking = false;
+            cat.style.transform = 'translate(-50%, -50%)';
+        }
+
+        function startViolentShake() {
+            if (isViolentShaking) return;
+            isViolentShaking = true;
+            isShaking = false; // End gentle shake
+            shakeStartTime = performance.now();
+        }
+
+        function updateViolentShake(elapsedMs) {
+            // Increasingly violent shake over 13 seconds (1:28-1:41)
+            const duration = 13000; // 13 seconds
+            const progress = Math.min(1, elapsedMs / duration);
+
+            // Intensity grows from gentle to very violent
+            const baseIntensity = 54; // 4 + 50
+            const maxIntensity = 100; // 50 + 50
+            const intensity = baseIntensity + (maxIntensity - baseIntensity) * progress;
+
+            // Higher frequency and amplitude as time progresses
+            const frequency = 0.02 + (progress * 0.08); // 0.02 to 0.1
+            const shakeX = Math.sin(elapsedMs * frequency) * intensity;
+            const shakeY = Math.cos(elapsedMs * frequency * 1.1) * intensity;
+
+            cat.style.transform = `translate(-50%, -50%) translate(${shakeX}px, ${shakeY}px)`;
+        }
+
+        function endViolentShake() {
+            if (!isViolentShaking) return;
+            isViolentShaking = false;
+            cat.style.transform = 'translate(-50%, -50%)';
+        }
+
+        function startStillPhase() {
+            if (isStill) return;
+            isStill = true;
+
+            // Completely still - reset transform to center position
+            cat.style.transform = 'translate(-50%, -50%)';
+        }
+
+        function endStillPhase() {
+            if (!isStill) return;
+            isStill = false;
+        }
+
+        function resumeSpinning() {
+            // Resume the original spinning animation
+            cat.classList.add('spin');
+        }
+
+        function stopMajesticFloat() {
+            if (floatRAF !== null) {
+                cancelAnimationFrame(floatRAF);
+                floatRAF = null;
+            }
+            if (isFloating) {
+                endMajesticFloat();
+            }
+            if (isShaking) {
+                endGentleShake();
+            }
+            if (isViolentShaking) {
+                endViolentShake();
+            }
+            if (isStill) {
+                endStillPhase();
+            }
         }
 
         function cleanup() {
@@ -168,6 +397,7 @@
             // stop any loops/effects
             stopFade();
             stopVisualizer();
+            stopMajesticFloat();
             document.body.classList.remove('rave-bg');
             cat.classList.remove('spin');
             // fade out visuals then remove
@@ -233,6 +463,14 @@
 
             // time-based fade independent of audio.volume reads
             const startTime = performance.now();
+            let lastFadeTime = 0;
+            let currentFadeState = 'visible'; // 'visible', 'fading-out', 'hidden', 'fading-in'
+            let fadeStartTime = 0;
+            let currentPosition = { x: 0, y: 0 };
+            let targetPosition = { x: 0, y: 0 };
+            let baseY = 0; // starting Y position for upward drift
+            let teleportCount = 0; // track number of teleports for scaling
+
             const tick = (now) => {
                 if (ended) return; // stop if ended
                 const elapsed = now - startTime;
@@ -242,7 +480,89 @@
                 if (gainNode) {
                     try { gainNode.gain.value = vol; } catch (_) { }
                 }
+
+                // Random fade in/out and position changes during first 33 seconds
+                if (elapsed < fadeDurationMs) {
+                    // Random fade timing (every 1.5-4 seconds)
+                    const timeSinceLastFade = now - lastFadeTime;
+                    const shouldTriggerFade = timeSinceLastFade > (1500 + Math.random() * 2500);
+
+                    if (shouldTriggerFade && currentFadeState === 'visible') {
+                        // Start fading out and move to new position
+                        currentFadeState = 'fading-out';
+                        fadeStartTime = now;
+                        lastFadeTime = now;
+
+                        // Generate new random position
+                        const screenWidth = window.innerWidth;
+                        const screenHeight = window.innerHeight;
+                        const catWidth = 96; // cat width from CSS
+
+                        targetPosition.x = Math.random() * (screenWidth - catWidth);
+                        targetPosition.y = Math.random() * (screenHeight * 0.7); // keep in upper 70% of screen
+                        baseY = targetPosition.y; // reset base Y for upward drift
+                    }
+
+                    // Handle fade states
+                    const fadeElapsed = now - fadeStartTime;
+                    const fadeDuration = 400; // 400ms fade duration
+
+                    if (currentFadeState === 'fading-out') {
+                        const fadeProgress = Math.min(1, fadeElapsed / fadeDuration);
+                        cat.style.opacity = 1 - fadeProgress;
+
+                        if (fadeProgress >= 1) {
+                            currentFadeState = 'hidden';
+                            fadeStartTime = now;
+
+                            // Move cat to new position while hidden and increase scale
+                            teleportCount++;
+                            currentPosition.x = targetPosition.x;
+                            currentPosition.y = targetPosition.y;
+                            cat.style.left = currentPosition.x + 'px';
+                            cat.style.top = currentPosition.y + 'px';
+
+                            // Gradually increase scale with each teleport (5% bigger each time, max 2x)
+                            const scaleIncrease = Math.min(1 + (teleportCount * 0.05), 2.0);
+                            cat.style.transform = `scale(${scaleIncrease})`;
+                        }
+                    } else if (currentFadeState === 'hidden') {
+                        // Stay hidden for 200-800ms
+                        const hiddenDuration = 200 + Math.random() * 600;
+                        if (fadeElapsed >= hiddenDuration) {
+                            currentFadeState = 'fading-in';
+                            fadeStartTime = now;
+                        }
+                    } else if (currentFadeState === 'fading-in') {
+                        const fadeProgress = Math.min(1, fadeElapsed / fadeDuration);
+                        cat.style.opacity = fadeProgress;
+
+                        if (fadeProgress >= 1) {
+                            currentFadeState = 'visible';
+                            cat.style.opacity = 1;
+                        }
+                    }
+
+                    // Continuous upward movement
+                    if (currentFadeState === 'visible' || currentFadeState === 'fading-in') {
+                        const upwardSpeed = 0.2; // slower consistent upward movement
+                        currentPosition.y -= upwardSpeed; // simple consistent upward movement
+                        cat.style.top = currentPosition.y + 'px';
+
+                        // Reset position if cat moved too far up
+                        if (currentPosition.y < -100) {
+                            currentPosition.y = window.innerHeight * 0.8;
+                            baseY = currentPosition.y;
+                        }
+                    }
+                }
+
                 if (fraction >= 1) {
+                    // Reset cat styles before starting rave
+                    cat.style.left = '';
+                    cat.style.top = '';
+                    cat.style.opacity = '';
+                    cat.style.transform = ''; // reset scale
                     stopFade();
                     startRave();
                     return;
