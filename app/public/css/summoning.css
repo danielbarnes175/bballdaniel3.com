@@ -3,7 +3,8 @@
     position: fixed;
     left: 1rem;
     bottom: 1rem;
-    z-index: 1000;
+    z-index: 3000;
+    /* above visualizer */
     pointer-events: none;
     /* allow button to handle clicks */
 }
@@ -34,6 +35,8 @@
     opacity: 0;
     transition: transform 3s ease-in-out, opacity 2s ease-in;
     pointer-events: none;
+    z-index: 3500;
+    /* ensure above visualizer during rise */
 }
 
 .summon-cat.rise {
@@ -49,7 +52,8 @@
     transform: translate(-50%, -50%);
     width: min(80vmin, 900px);
     max-height: 90vh;
-    z-index: 2000;
+    z-index: 10000;
+    /* far above visualizer */
     transition: transform 600ms ease, width 600ms ease;
 }
 
@@ -129,6 +133,20 @@
 body.rave-bg {
     background-image: none !important;
     animation: raveFlash 4s steps(1, end) infinite;
+}
+
+/* Visualizer canvas (behind center-stage cat) */
+#audio-visualizer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    /* keep well behind */
+    pointer-events: none;
+    display: none;
+}
+
+#audio-visualizer.active {
+    display: block;
 }
 
 /* Hide summoning UI on mobile */
