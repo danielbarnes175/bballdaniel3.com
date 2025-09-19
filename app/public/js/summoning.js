@@ -1,9 +1,10 @@
 // Summoning feature script
 (function () {
     const isHome = () => location.pathname === '/' || location.pathname === '';
+    const isDesktop = () => window.matchMedia('(min-width: 751px)').matches;
 
     function initSummoning() {
-        if (!isHome()) return;
+        if (!isHome() || !isDesktop()) return;
         const container = document.getElementById('summon-container');
         const btn = document.getElementById('summon-btn');
         const cat = document.getElementById('summon-cat');
@@ -61,8 +62,12 @@
                 cat.classList.add('rise');
             });
 
+            const startVol = 0.15; // 15%
+            const targetVol = 0.3; // 30%
+            const fadeDurationMs = 33000; // 33 seconds
+
             // try to set initial volume (some browsers ignore this)
-            try { audio.volume = 0.0; } catch (_) { }
+            try { audio.volume = startVol; } catch (_) { }
 
             // Web Audio API for reliable gain control on iOS
             try {
@@ -74,7 +79,7 @@
                     }
                     const src = audioCtx.createMediaElementSource(audio);
                     gainNode = audioCtx.createGain();
-                    gainNode.gain.value = 0.0;
+                    gainNode.gain.value = startVol;
                     src.connect(gainNode);
                     gainNode.connect(audioCtx.destination);
                 }
@@ -82,9 +87,6 @@
                 audioCtx = null;
                 gainNode = null;
             }
-
-            const targetVol = 0.3;
-            const fadeDurationMs = 33000; // 33 seconds
 
             // play audio
             const playPromise = audio.play();
@@ -100,7 +102,7 @@
                 if (ended) return; // stop if ended
                 const elapsed = now - startTime;
                 const fraction = Math.min(1, elapsed / fadeDurationMs);
-                const vol = targetVol * fraction;
+                const vol = startVol + (targetVol - startVol) * fraction;
                 try { audio.volume = vol; } catch (_) { }
                 if (gainNode) {
                     try { gainNode.gain.value = vol; } catch (_) { }

@@ -130,3 +130,10 @@ body.rave-bg {
     background-image: none !important;
     animation: raveFlash 4s steps(1, end) infinite;
 }
+
+/* Hide summoning UI on mobile */
+@media (max-width: 750px) {
+    #summon-container {
+        display: none !important;
+    }
+}
