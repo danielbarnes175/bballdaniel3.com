@@ -2,17 +2,58 @@
 .blog-background {
     background: var(--bg-surface);
     padding: 10px;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
 }
 
 .post-content h2 {
     color: var(--text-color);
 }
 
-.post-content p {
-    font-size: 1em;
+.post-content code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background: var(--bg-alt);
+    padding: 0.1em 0.1em;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
 }
 
-/* Style for the tag cloud */
+.post-content pre {
+    overflow-x: auto;
+    background: var(--bg-alt);
+    padding: 1em;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.post-content pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Media */
+.post-content img,
+.post-content video,
+.post-content iframe {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.2em auto;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+}
+
+.post-content figure {
+    margin: 1.2em 0;
+}
+
+.post-content figcaption {
+    color: var(--text-dim);
+    font-size: 0.95em;
+    text-align: center;
+}
+
 .tag-cloud {
     margin-top: 20px;
 }
@@ -21,8 +62,8 @@
     display: inline-block;
     background: var(--tag-bg);
     color: white;
-    padding: 5px 10px;
-    margin: 5px;
+    padding: 0 10px 5px 10px;
+    margin: 3px;
     border-radius: 5px;
     text-decoration: none;
     font-size: 14px;
@@ -32,7 +73,6 @@
     background: var(--tag-bg-hover);
 }
 
-/* Highlight the active tag */
 .active-tag {
     font-weight: bold;
     color: var(--accent);
@@ -52,9 +92,10 @@
     padding: 15px;
     margin-bottom: 20px;
     background: var(--bg-surface);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    border-radius: 12px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid var(--border-color);
 }
 
 .blog-post:hover {
@@ -66,11 +107,7 @@
 
 .blog-post h3 {
     margin-bottom: 5px;
-}
-
-.blog-post small {
-    color: var(--text-dim);
-    font-size: 14px;
+    margin-top: 0;
 }
 
 .blog-post p {
@@ -103,10 +140,4 @@
 .read-more:hover {
     text-decoration: underline;
     color: var(--link-hover);
-
-    .blog-post h3,
-    .blog-post small,
-    .blog-post p,
-    .blog-post .read-more {
-        color: inherit;
-    }
+}
