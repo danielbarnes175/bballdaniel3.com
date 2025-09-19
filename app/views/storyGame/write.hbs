@@ -12,7 +12,12 @@
     <br>
 </form>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
+    const socket = io();
+    const code = "{{code}}";
+    const username = "{{username}}";
+    socket.emit('join-room', code);
     const easyMDE = new EasyMDE({
         toolbar: ["bold", "italic", "|", "preview"],
         status: ["lines", "words"],
@@ -41,6 +46,10 @@
 
     socket.on("start-turn", ({ turn, endsIn }) => {
         window.location.href = `/games/story/${code}/write?turn=${turn}&username=${username}`;
+    });
+
+    socket.on("start-reading-phase", ({ turn, endsIn }) => {
+        window.location.href = `/games/story/${code}/reading?username=${username}`;
     });
 
     socket.on("game-finished", () => {

@@ -27,5 +27,9 @@ module.exports = {
         } catch (e) {
             return '[]';
         }
+    },
+    includes: function (arr, item) {
+        if (!Array.isArray(arr)) return false;
+        return arr.includes(item);
     }
 };

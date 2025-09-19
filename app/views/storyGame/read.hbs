@@ -1,0 +1,66 @@
+<h1>Reading Phase</h1>
+
+<p class="story-meta">Time Left: <span id="timer">{{timeLeft}}</span> seconds</p>
+
+<h3>Votes</h3>
+<ul id="vote-list">
+    {{#each voters}}
+    <li data-name="{{this}}">{{this}} - <span class="status">{{#if (includes ../votes
+            this)}}Voted{{else}}Waiting{{/if}}</span></li>
+    {{/each}}
+</ul>
+
+<button id="vote-btn">I'm ready to continue</button>
+<div class="resultsBox story-markdown story-content">{{{markdown nextContent}}}</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const code = "{{code}}";
+    const username = "{{username}}";
+    socket.emit('join-room', code);
+
+    let time = {{ timeLeft }};
+    const timerEl = document.getElementById('timer');
+    const voteBtn = document.getElementById('vote-btn');
+
+    const countdown = setInterval(() => {
+        time--;
+        timerEl.textContent = time;
+        if (time <= 0) {
+            clearInterval(countdown);
+        }
+    }, 1000);
+
+    voteBtn.addEventListener('click', async () => {
+        try {
+            await fetch(`/games/story/${code}/reading/vote`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username })
+            });
+            voteBtn.disabled = true;
+        } catch (e) { }
+    });
+
+    socket.on('reading-phase-vote-update', ({ voters, votes }) => {
+        const list = document.getElementById('vote-list');
+        list.querySelectorAll('li').forEach(li => {
+            const name = li.getAttribute('data-name');
+            const status = li.querySelector('.status');
+            if (votes.includes(name)) {
+                status.textContent = 'Voted';
+            } else {
+                status.textContent = 'Waiting';
+            }
+        });
+    });
+
+    socket.on('start-turn', ({ turn }) => {
+        window.location.href = `/games/story/${code}/write?turn=${turn}&username=${encodeURIComponent(username)}`;
+    });
+
+    socket.on('game-finished', () => {
+        window.location.href = `/games/story/${code}/results?username=${encodeURIComponent(username)}`;
+    });
+</script>

@@ -37,6 +37,10 @@ module.exports = function (app) {
     app.route('/games/story/:code/write')
         .get(gameController.writeTurn)
         .post(gameController.submitTurn);
+    app.route('/games/story/:code/reading')
+        .get(gameController.reading);
+    app.route('/games/story/:code/reading/vote')
+        .post(gameController.voteReadingPhase);
     app.route('/games/story/:code/results')
         .get(gameController.results);
 

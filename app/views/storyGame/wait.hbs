@@ -14,6 +14,11 @@
         window.location.href = `/games/story/${code}/write?turn=${turn}&username=${encodeURIComponent(username)}`;
     });
 
+    socket.on("start-reading-phase", ({ turn, endsIn }) => {
+        const username = "{{username}}";
+        window.location.href = `/games/story/${code}/reading?username=${encodeURIComponent(username)}`;
+    });
+
     socket.on("game-finished", () => {
         const username = "{{username}}";
         window.location.href = `/games/story/${code}/results?username=${encodeURIComponent(username)}`;
