@@ -22,11 +22,6 @@
         let vizCanvas = null;
         let vizCtx = null;
         let vizRAF = null;
-        // Spin speed control
-        let lastSpinDur = 0.5; // seconds
-        const minSpinDur = 0.2;
-        const maxSpinDur = 2.0;
-        const spinEase = 0.15; // EMA for duration changes
 
         function stopFade() {
             if (fadeRAF !== null) {
@@ -78,7 +73,7 @@
             // Temporal smoothing buffer (EMA)
             const ema = new Float32Array(bufferLength);
             const emaAlpha = 0.22; // 0..1, higher = smoother
-            const amp = 1.6; // amplitude boost for drawing
+            const amp = 1.6; // amplitude boost
 
             const draw = () => {
                 if (ended) return;
@@ -110,20 +105,6 @@
                         smoothed[i] = (ema[i - 1] + ema[i] * 2 + ema[i + 1]) / 4; // light 3-tap spatial smoothing
                     }
                 }
-
-                // Compute RMS energy to drive spin speed
-                let sumSq = 0;
-                for (let i = 0; i < bufferLength; i++) {
-                    const v = smoothed[i];
-                    sumSq += v * v;
-                }
-                const rms = Math.sqrt(sumSq / bufferLength); // 0..~0.7 typical
-                const norm = Math.max(0, Math.min(1, rms / 0.35)); // normalize, clamp
-                const targetDur = maxSpinDur - norm * (maxSpinDur - minSpinDur);
-                // Smooth duration to avoid jitter
-                lastSpinDur = lastSpinDur + spinEase * (targetDur - lastSpinDur);
-                // Apply to cat even if spin not started yet; will take effect once it does
-                cat.style.animationDuration = `${lastSpinDur.toFixed(3)}s`;
 
                 // Primary neon gradient stroke
                 const grad = vizCtx.createLinearGradient(0, 0, w, 0);
@@ -189,8 +170,6 @@
             stopVisualizer();
             document.body.classList.remove('rave-bg');
             cat.classList.remove('spin');
-            // reset any inline overrides
-            cat.style.removeProperty('animation-duration');
             // fade out visuals then remove
             cat.classList.add('fade-out');
             container.classList.add('fade-out');
