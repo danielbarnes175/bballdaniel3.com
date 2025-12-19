@@ -25,6 +25,11 @@ jobs:
           script: |
             eval `ssh-agent -s`
             ssh-add ~/.ssh/id_github
+
+            docker login dhi.io \
+            -u ${{ secrets.DHI_USERNAME }} \
+            -p ${{ secrets.DHI_TOKEN }}
+
             cd ~/applications/bballdaniel3.com
             git fetch --prune origin main
             git reset --hard origin/main
