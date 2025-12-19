@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "docker-compose build",
-    "start": "docker-compose up -d",
-    "restart": "docker-compose down && docker-compose up --build -d",
+    "build": "docker compose build",
+    "start": "docker compose up -d",
+    "restart": "docker compose down && docker compose up --build -d",
     "nodemon": "nodemon --ignore 'app/data/*' -e \"*\" app/server.js"
   },
   "author": "",

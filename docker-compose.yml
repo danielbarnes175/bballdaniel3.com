@@ -4,8 +4,7 @@ services:
     ports:
       - "1234:1234"
     environment:
-      - NODE_ENV=production
+      NODE_ENV: production
     volumes:
-      - ./app/data:/app/data
-    command: ["npx", "nodemon", "--legacy-watch", "--ignore", "app/data/*", "server.js"]
+      - ./app/data:/app/app/data
     restart: unless-stopped

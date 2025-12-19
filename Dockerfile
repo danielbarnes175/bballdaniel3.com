@@ -1,17 +1,17 @@
-FROM node:20-alpine
-
-# Set working directory
+FROM dhi.io/node:25-alpine3.22-dev AS build-stage
 WORKDIR /app
+ENV NODE_ENV=production
 
-# Copy package.json and install dependencies
-COPY package.json package-lock.json ./
-RUN npm install
+COPY package*.json ./
+RUN npm ci --omit=dev
 
-# Copy the rest of the app
-COPY app /app
+FROM dhi.io/node:25-alpine3.22 AS runtime-stage
+WORKDIR /app
+ENV NODE_ENV=production
 
-# Expose the port the app runs on
+COPY --from=build-stage /app/node_modules ./node_modules
+COPY app ./app
+COPY package*.json ./
+
 EXPOSE 1234
-
-# Start the application
-CMD ["node", "server.js"]
+CMD ["node", "app/server.js"]
