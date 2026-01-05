@@ -1,0 +1,33 @@
+---
+title: "Merry Christmas 2025"
+date: "2025-12-22"
+tags: ["general"]
+---
+As we wrap up the year, I'd like to wish everyone a very merry Christmas.
+
+My first commit to this website was on January 30th. At the time, I didn't really have any idea of why I wanted to create this website. I only knew that I wanted to move on from developinspirecreate.com, my previous website, and have a place to just put whatever I want on it. Now that almost a year has passed, I thought it would be nice to do a little retrospective on myself, and the website as a whole.
+
+2025 was really a year where I wanted more for myself. And while sometimes people say that in situations where they didn't do enough, for my case, I see the year as a success. The beginning of the year was rather straightforward. I made this website, expanded my homelab, and I even did some freelancing on Fiverr. The theme of the year was improvement in my tech skills, and each of these contributed to that. Whether it was learning new technologies, or reading new tech blogs, I made sure to consistently try to learn new things.
+
+I was writing a blog post a while back -- one that I never published -- that spoke to how I felt that I was filled with that constant desire to improve. Like everyone, I have my periods of low motivation and struggles, but for most of 2025, I felt like I was back during my college years, when I had a billion different projects, and a desire to succeed. And this website felt like a maturation of that ideal. I wanted to learn, and I wanted to grow, but I wasn't placing any expectations on myself. Sometimes I used to find myself following the fads. Whether it was a certain technology, or a specific project I thought would look good on my resume, those were what defined my learning. And while it did have a purpose at the time, this time around, I just wanted to learn what I wanted to learn.
+
+It made the process so much more enjoyable. I'm sure I've had this epiphany before, and it's certainly not the most novel idea ever, but learning is easier when it is something you want to learn. And so learn I did.
+
+I took up a tool called [Twine](https://twinery.org/), a technology for creating interactive fiction style games/novels. The first half of the year was very much my storyteller phase where I wanted to tell stories. It was part of the reason I started this blog, but I digress. Consistently with me, however, I very much like to start projects, but not 
+finish them. It's something that I know is a problem, but sometimes the spark of joy in learning something knew can wear out quicker than you'd expect. So my natural progression here was to find a way to force me to finish projects. How could I finish projects, while also beating writer's block, so that I actually have ideas for the story? Well, the obvious answer is to freelance. I can take other people's ideas, use Twine to bring them to life, get solid practice from the technology, and make a bit of extra money on the side.
+
+This worked great. I was bringing in clients, and I was very much enjoying the process. The only downside was that it was a very large time commitment, and when you factored in the time in took, as well as the Fiverr cut, I was making less than minimum wage. So, after my 13 or so clients across a few months, I decided to retire from Fiverr, and that was that.
+
+This left a whole in my life. I still had that desire to learn, but I wanted to do it on my own time. And of course, this brought me to my server. Oh my server, my server, how I love you so. If there was a toy that could provide endless joy, and endless headaches at the same time, the server would look eerily like it. And while I won't get in depth into all the details into the work I did for the server, I will talk about some of the higher level topics. I was able to learn more about security, networking, docker, and just general cross system architectures from working on this. I think everyone should get some kind of homelab that they can just tinker with and it has near limitless opportunities for growth if you know how to use it. In fact, I plan on writing a blog post detailing why everyone should get a homelab at some point. But long story short, the homelab was very good.
+
+2025 was also a big year for AI. And I'm sure many readers had their eyes glaze over when I brought up AI, so I'll keep it short. AI coding agents emerged, and with it, the rise of vibe coding came. As a coding professional, I experimented with it, namely to vibe code the writing game on this website. The writing game allows you to collaboratively write stories with your friends. For the most part, the AI was pretty helpful, but I've found that vibe coding can lead to more complex code, and hidden bugs, so I've learned that it's not a very smart thing to do. Unfortunately, it seems every day there's a new vibe coded app release. And these are coming from people that don't know how to code. I just can't trust that software, and it's frustrating because at some point it won't be easy to tell when an app is vibe coded.
+
+And this isn't me saying AI isn't helpful. In fact, FrameByFrame, my animation program that I developed, had a long standing bug where as you added more frames to an animation, the memory used would cause slowdowns. AI helped me diagnose and fix the issue, and it's something that has plagued me for years now, (albeit, I reckon most of this is due to my inexperience with C#). The biggest issue with AI, and it is the most frustrating with how AI is being shoved down our throats, is that AI has no idea if it is actually correct or not. So to use it, you need to know the answer already, but at that point, why are you using AI? It's a bit of a catch 22.
+
+Aside from AI, in 2025 I wanted a way to keep my skills up to date. And you don't know what you don't know, so for anyone to learn something, there needs to be a way to trigger a new topic. For me, this trigger would be blog posts. More specifically, I set up an RSS feed aggregator to collect various tech blogs that I would be able to come back to later and *learn*. It helped immensely for my growth. The hardest part is actually dedicating the time to keep up with it. Honestly I just need to incorporate it into my daily flow and take out some of my reddit browsing time.
+
+Aside from that, I think there's not really any big things that happened, growth wise, for me in 2025. But for the areas that I did want to grow, I feel like I grew a lot. Hopefully in 2026, I'll be able to use this blog more, as a way to demonstrate my growth.
+
+But for now, I say merry Christmas, and have a happy New Year,
+
+Daniel
