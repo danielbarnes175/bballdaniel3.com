@@ -21,14 +21,12 @@
         })();
     </script>
     <link rel="stylesheet" href="/css/animations.css">
-    <link rel="stylesheet" href="/css/blog.css">
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/guestbook.css">
     <link rel="stylesheet" href="/css/games.css">
-    <link rel="stylesheet" href="/css/projects.css">
-    <link rel="stylesheet" href="/css/summoning.css">
+    <link rel="stylesheet" href="/css/storyGame/results.css">
+    <link rel="stylesheet" href="/css/storyGame/easyMDE.css">
     <script defer src="https://unpkg.com/swup@4"></script>
     <script defer src="https://unpkg.com/@swup/forms-plugin@3"></script>
     <script defer src="https://unpkg.com/@swup/head-plugin@2"></script>
@@ -36,7 +34,9 @@
     <script defer src="https://unpkg.com/@swup/scripts-plugin@2"></script>
     <script defer type="module" src="/js/swup.js"></script>
     <script defer src="/js/theme.js"></script>
-    <script defer src="/js/summoning.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <script type="text/javascript" src="/js/purify.min.js"></script>
     {{#each scripts}}
     <script type="text/javascript" src="{{script}}"></script>
     {{/each}}

@@ -130,7 +130,7 @@ module.exports = {
         const username = req.query.username;
 
         if (!username) {
-            return res.render("storyGame/enterName", { startGame: true });
+            return res.render("storyGame/enterName", { startGame: true, layout: "storyGame" });
         }
 
         const code = Math.random().toString(36).slice(2, 6).toUpperCase();
@@ -156,7 +156,7 @@ module.exports = {
             if (room.state !== "waiting") {
                 return res.status(403).send("Game already started");
             }
-            return res.render("storyGame/enterName", { code });
+            return res.render("storyGame/enterName", { code, layout: "storyGame" });
         }
 
         const alreadyInRoom = room.players.some(p => p.name === username);
@@ -175,7 +175,8 @@ module.exports = {
                 code,
                 turn: room.currentTurn + 1,
                 username,
-                message: "Game in progress..."
+                message: "Game in progress...",
+                layout: "storyGame"
             });
         }
 
@@ -183,7 +184,8 @@ module.exports = {
             code,
             room,
             username,
-            joinUrl: `${req.protocol}://${req.get('host')}/games/story/${code}`
+            joinUrl: `${req.protocol}://${req.get('host')}/games/story/${code}`,
+            layout: "storyGame"
         });
 
     },
@@ -213,7 +215,8 @@ module.exports = {
             voters,
             votes,
             nextStoryIndex: storyIndex + 1,
-            nextContent: story ? story.content : ''
+            nextContent: story ? story.content : '',
+            layout: "storyGame"
         });
     },
 
@@ -326,7 +329,8 @@ module.exports = {
             time: room.settings.turnTime,
             totalTurns: room.players.length,
             previousContent: story.content,
-            timeLeft
+            timeLeft,
+            layout: "storyGame"
         });
     },
 
@@ -345,7 +349,7 @@ module.exports = {
         room.progress[username] = currentTurn; // mark this turn as completed
 
         // Player gets a waiting screen
-        res.render("storyGame/wait", { code, turn: currentTurn, username, message: "Waiting for other players..." });
+        res.render("storyGame/wait", { code, turn: currentTurn, username, message: "Waiting for other players...", layout: "storyGame" });
     },
 
 
@@ -360,7 +364,8 @@ module.exports = {
             username: req.query.username || '',
             stories: room.stories,
             keepHistory: room.settings.keepHistory,
-            votes: room.resultVotes || room.stories.map(() => ({ likes: [], dislikes: [] }))
+            votes: room.resultVotes || room.stories.map(() => ({ likes: [], dislikes: [] })),
+            layout: "storyGame"
         });
     },
 
