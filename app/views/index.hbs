@@ -26,6 +26,7 @@
 </center>
 
 <!-- Summoning UI -->
+{{#if catsEnabled}}
 <div id="summon-container" aria-live="polite">
     <button id="summon-btn" class="summon-btn" aria-label="Summon the cat" title="Summon">
         <img src="/images/summoning_circle.png" alt="Summoning circle" class="summon-circle" />
@@ -35,3 +36,4 @@
         <source src="/audio/oiia.mp3" type="audio/mpeg">
     </audio>
 </div>
+{{/if}}

@@ -6,7 +6,10 @@ const { getBlog, getPost } = require("./blog");
 const { getTag } = require("./tags")
 
 module.exports = {
-    home: (req, res) => res.render("index"),
+    home: (req, res) => {
+        const catsEnabled = req.query.cats;
+        res.render("index", { catsEnabled })
+    },
     about: (req, res) => res.render("about"),
     blog: getBlog,
     post: getPost,
