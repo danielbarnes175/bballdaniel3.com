@@ -1,18 +1,38 @@
 <h1>Write Your Part</h1>
 
-<p class="story-meta"><strong>Turn {{add turn 1}}</strong> of {{totalTurns}}</p>
+<p class="story-meta"><strong>Turn {{add room.currentTurn 1}}</strong> of {{room.players.length}}</p>
 <p class="story-meta">Story #{{storyIndex}}</p>
 <p class="story-meta">Time Left: <span id="timer">{{timeLeft}}</span> seconds</p>
 
-<form id="writeForm" action="/games/story/{{code}}/write" method="POST">
+<form id="writeForm" onclick="playMusic({{room.settings.enableScotlandMode}})" action="/games/story/{{code}}/write"
+    method="POST">
     <textarea class="story-textarea" name="content" rows="12" required>{{previousContent}}</textarea>
     <input type="hidden" name="code" value="{{code}}">
-    <input type="hidden" name="turn" value="{{turn}}">
+    <input type="hidden" name="turn" value="{{room.currentTurn}}">
     <input type="hidden" name="username" value="{{username}}">
     <br>
 </form>
 
 <p class="story-meta">Time Left: <span id="timer2">{{timeLeft}}</span> seconds</p>
+
+<audio id="bagpipe-audio" preload="auto">
+    <source src="/audio/bagpipes.mp3" type="audio/mpeg">
+</audio>
+<script>
+    const scotlandMode = {{ room.settings.enableScotlandMode }};
+
+    if (scotlandMode) {
+        document.body.classList.add('scotland-mode');
+    }
+
+
+    function playMusic(musicEnabled) {
+        if (musicEnabled) {
+            const bagpipeAudio = document.getElementById('bagpipe-audio');
+            bagpipeAudio.play();
+        }
+    }
+</script>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>

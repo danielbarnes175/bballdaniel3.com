@@ -33,6 +33,11 @@
             <input type="number" name="readingPhaseTime" value="{{room.settings.readingPhaseTime}}" min="5" />
         </label>
     </fieldset>
+    <label>
+        <input type="checkbox" name="enableScotlandMode" {{#if room.settings.enableScotlandMode}}checked{{/if}} />
+        Enable Scotland mode - Experimental
+    </label>
+    <br><br>
     <button type="submit">Start Game</button>
 </form>
 {{else}}

@@ -255,6 +255,7 @@ module.exports = {
         room.settings.keepHistory = !!req.body.keepHistory;
         room.settings.enableReadingPhase = !!req.body.enableReadingPhase;
         room.settings.readingPhaseTime = parseInt(req.body.readingPhaseTime) || 30;
+        room.settings.enableScotlandMode = !!req.body.enableScotlandMode;
 
         // Init game state
         room.currentTurn = 0;
@@ -323,14 +324,12 @@ module.exports = {
 
         res.render("storyGame/write", {
             code,
-            turn: room.currentTurn,
             storyIndex: storyIndex + 1,
             username,
-            time: room.settings.turnTime,
-            totalTurns: room.players.length,
             previousContent: story.content,
             timeLeft,
-            layout: "storyGame"
+            layout: "storyGame",
+            room
         });
     },
 
