@@ -12,6 +12,8 @@
     <br>
 </form>
 
+<p class="story-meta">Time Left: <span id="timer2">{{timeLeft}}</span> seconds</p>
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
     const socket = io();
@@ -33,11 +35,13 @@
     });
     let time = {{ timeLeft }};
     const timerEl = document.getElementById('timer');
+    const timerEl2 = document.getElementById('timer2');
     const form = document.getElementById('writeForm');
 
     const countdown = setInterval(() => {
         time--;
         timerEl.textContent = time;
+        timerEl2.textContent = time;
         if (time <= 0) {
             clearInterval(countdown);
             form.submit(); // or lock input and wait for server redirect
