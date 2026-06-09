@@ -95,13 +95,6 @@
         </div>
     </div>
 
-    <div class="carousel-dots">
-        {{#each stories}}
-        <button class="carousel-dot {{#if @first}}active{{/if}}" data-slide="{{@index}}"
-            title="Go to story {{add @index 1}}"></button>
-        {{/each}}
-    </div>
-
     <div class="carousel-footer">
         <div class="story-counter">
             <span class="current-story-bottom">1</span> of <span class="total-stories">{{stories.length}}</span>

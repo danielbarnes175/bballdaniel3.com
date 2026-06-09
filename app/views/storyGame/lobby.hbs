@@ -15,6 +15,7 @@
 </ul>
 
 {{#if (eq room.host username)}}
+<h2>Game Settings</h2>
 <form id="start-form" action="/games/story/{{code}}/start" method="POST">
     <label>Turn Time (seconds):
         <input type="number" name="turnTime" value="{{room.settings.turnTime}}" min="10" />
@@ -33,9 +34,15 @@
             <input type="number" name="readingPhaseTime" value="{{room.settings.readingPhaseTime}}" min="5" />
         </label>
     </fieldset>
+    <h3>Fun Settings</h3>
     <label>
         <input type="checkbox" name="enableScotlandMode" {{#if room.settings.enableScotlandMode}}checked{{/if}} />
         Enable Scotland mode - Experimental
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" name="enableMedievalMode" {{#if room.settings.enableMedievalMode}}checked{{/if}} />
+        Enable Medieval mode - Experimental
     </label>
     <br><br>
     <button type="submit">Start Game</button>

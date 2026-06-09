@@ -1,5 +1,6 @@
 const { renderMarkdown } = require('../helpers/sanitizeMarkdown');
 const { sendStoryGameToDiscord } = require('../helpers/sendToDiscord');
+const { convertToMedieval } = require('../helpers/convertToMedieval');
 
 const rooms = {}; // In-memory storage for now
 
@@ -89,6 +90,14 @@ function finishTurn(room, code, io) {
         }, room.settings.readingPhaseTime * 1000);
     } else if (room.currentTurn >= room.players.length) {
         room.state = "finished";
+
+        // If Medieval Mode is enabled, convert body to medieval speech
+        if (room.settings.enableMedievalMode) {
+            room.stories = room.stories.map(story => {
+                story.content = convertToMedieval(story.content);
+                return story;
+            });
+        }
 
         // Initialize per-story like/dislike vote buckets
         room.resultVotes = room.stories.map(() => ({ likes: [], dislikes: [] }));
@@ -256,6 +265,7 @@ module.exports = {
         room.settings.enableReadingPhase = !!req.body.enableReadingPhase;
         room.settings.readingPhaseTime = parseInt(req.body.readingPhaseTime) || 30;
         room.settings.enableScotlandMode = !!req.body.enableScotlandMode;
+        room.settings.enableMedievalMode = !!req.body.enableMedievalMode;
 
         // Init game state
         room.currentTurn = 0;
