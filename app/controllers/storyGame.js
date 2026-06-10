@@ -150,7 +150,7 @@ module.exports = {
             stories: [],
             state: "waiting"
         };
-        res.redirect(`/games/story/${code}?username=${rooms[code].host}`);
+        res.redirect(`/games/story/${code}?username=${encodeURIComponent(rooms[code].host)}`);
     },
 
     joinRoom: (req, res) => {
@@ -292,7 +292,7 @@ module.exports = {
 
         io.to(code).emit('game-started');
 
-        res.redirect(`/games/story/${code}?username=${room.host}`);
+        res.redirect(`/games/story/${code}?username=${encodeURIComponent(room.host)}`);
     },
 
 

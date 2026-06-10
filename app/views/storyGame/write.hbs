@@ -25,7 +25,6 @@
         document.body.classList.add('scotland-mode');
     }
 
-
     function playMusic(musicEnabled) {
         if (musicEnabled) {
             const bagpipeAudio = document.getElementById('bagpipe-audio');
@@ -69,11 +68,11 @@
     }, 1000);
 
     socket.on("start-turn", ({ turn, endsIn }) => {
-        window.location.href = `/games/story/${code}/write?turn=${turn}&username=${username}`;
+        window.location.href = `/games/story/${code}/write?turn=${turn}&username=${encodeURIComponent(username)}`;
     });
 
     socket.on("start-reading-phase", ({ turn, endsIn }) => {
-        window.location.href = `/games/story/${code}/reading?username=${username}`;
+        window.location.href = `/games/story/${code}/reading?username=${encodeURIComponent(username)}`;
     });
 
     socket.on("game-finished", () => {
