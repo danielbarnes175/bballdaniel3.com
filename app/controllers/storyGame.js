@@ -253,7 +253,6 @@ module.exports = {
         res.json({ voters, votes });
     },
 
-
     startGame: (req, res) => {
         const code = req.params.code.toUpperCase();
         const io = req.app.get('io');
@@ -266,12 +265,13 @@ module.exports = {
         room.settings.readingPhaseTime = parseInt(req.body.readingPhaseTime) || 30;
         room.settings.enableScotlandMode = !!req.body.enableScotlandMode;
         room.settings.enableMedievalMode = !!req.body.enableMedievalMode;
+        const startingPrompt = !!req.body.startingPromptEnabled ? req.body.startingPrompt : "";
 
         // Init game state
         room.currentTurn = 0;
         room.bufferTime = 5000;
         room.submissions = {};
-        room.stories = room.players.map(p => ({ authors: [], content: "", history: room.settings.keepHistory ? [] : undefined }));
+        room.stories = room.players.map(p => ({ authors: [], content: startingPrompt, history: room.settings.keepHistory ? [] : undefined }));
         room.state = "active";
         room.progress = {};
 
@@ -294,7 +294,6 @@ module.exports = {
 
         res.redirect(`/games/story/${code}?username=${encodeURIComponent(room.host)}`);
     },
-
 
     writeTurn: (req, res) => {
         const code = req.params.code.toUpperCase();
@@ -360,8 +359,6 @@ module.exports = {
         // Player gets a waiting screen
         res.render("storyGame/wait", { code, turn: currentTurn, username, message: "Waiting for other players...", layout: "storyGame" });
     },
-
-
 
     results: (req, res) => {
         const code = req.params.code.toUpperCase();
@@ -431,5 +428,19 @@ module.exports = {
         const payload = { storyIndex: sIdx, likes: bucket.likes, dislikes: bucket.dislikes };
         io.to(code).emit('results-vote-update', payload);
         res.json(payload);
+    },
+
+    getWritingPrompt: (req, res) => {
+        let prompt = "";
+        // Generate a random writing prompt
+        const prompts = [
+            "Write about a time you overcame a challenge.",
+            "Describe your favorite place in detail.",
+            "What is your biggest dream and how do you plan to achieve it?",
+            "Write a letter to your future self.",
+            "If you could have dinner with any historical figure, who would it be and why?"
+        ];
+        prompt = prompts[Math.floor(Math.random() * prompts.length)];
+        res.json({ prompt });
     }
-};
+}

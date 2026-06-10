@@ -20,6 +20,25 @@
     <label>Turn Time (seconds):
         <input type="number" name="turnTime" value="{{room.settings.turnTime}}" min="10" />
     </label>
+
+    <label style="display:block;margin-top:8px;">
+        <input type="checkbox" id="startingPromptEnabled" name="startingPromptEnabled" {{#if
+            room.settings.startingPromptEnabled}}checked{{/if}} />
+        Enable starting prompt
+    </label>
+
+    <div id="startingPromptContainer" style="{{#unless room.settings.startingPromptEnabled}}display:none;{{/unless}}">
+
+        <label>Starting Prompt:</label>
+        <textarea id="startingPrompt" name="startingPrompt" rows="4">{{room.settings.startingPrompt}}</textarea>
+
+        <br>
+
+        <button type="button" id="generatePromptBtn">
+            Generate Prompt
+        </button>
+    </div>
+
     <label style="display:block;margin-top:8px;">
         <input type="checkbox" name="keepHistory" {{#if room.settings.keepHistory}}checked{{/if}} /> Enable view
         individual submissions
@@ -78,5 +97,41 @@
 
     socket.on("game-finished", () => {
         window.location.href = `/games/story/${code}/results?username=${encodeURIComponent(username)}`;
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkbox = document.getElementById('startingPromptEnabled');
+        const container = document.getElementById('startingPromptContainer');
+        const generateBtn = document.getElementById('generatePromptBtn');
+        const promptTextarea = document.getElementById('startingPrompt');
+
+        checkbox.addEventListener('change', () => {
+            container.style.display = checkbox.checked ? 'block' : 'none';
+        });
+
+        generateBtn.addEventListener('click', async () => {
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+
+            try {
+                const response = await fetch('/api/getWritingPrompt');
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate prompt');
+                }
+
+                const data = await response.json();
+
+                // Adjust this depending on your API response shape
+                promptTextarea.value = data.prompt;
+            } catch (err) {
+                console.error(err);
+                alert('Unable to generate a prompt right now.');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Prompt';
+            }
+        });
     });
 </script>
