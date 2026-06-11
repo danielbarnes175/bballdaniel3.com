@@ -4,6 +4,12 @@
 <p class="story-meta">Story #{{storyIndex}}</p>
 <p class="story-meta">Time Left: <span id="timer">{{timeLeft}}</span> seconds</p>
 
+{{#if showGeneratePromptButton}}
+<button type="button" id="generatePromptBtn">
+    Generate Story Prompt
+</button>
+{{/if}}
+
 <form id="writeForm" onclick="playMusic({{room.settings.enableScotlandMode}})" action="/games/story/{{code}}/write"
     method="POST">
     <textarea class="story-textarea" name="content" rows="12" required>{{previousContent}}</textarea>
@@ -78,4 +84,16 @@
     socket.on("game-finished", () => {
         window.location.href = `/games/story/${code}/results`;
     });
+</script>
+<script>
+    const generatePromptBtn = document.getElementById('generatePromptBtn');
+
+    if (generatePromptBtn) {
+        generatePromptBtn.addEventListener('click', async () => {
+            const response = await fetch('/api/getWritingPrompt');
+            const data = await response.json();
+
+            easyMDE.value(data.prompt);
+        });
+    }
 </script>

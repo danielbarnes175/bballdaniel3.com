@@ -331,10 +331,13 @@ module.exports = {
         const elapsed = now - room.turnStartTime;
         const timeLeft = Math.max(0, Math.floor((room.turnLength - elapsed) / 1000));
 
+        const showGeneratePromptButton = room.currentTurn === 0 && (!story.content || !story.content.trim());
+
         res.render("storyGame/write", {
             code,
             storyIndex: storyIndex + 1,
             username,
+            showGeneratePromptButton,
             previousContent: story.content,
             timeLeft,
             layout: "storyGame",
