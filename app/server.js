@@ -49,6 +49,24 @@ app.set("view engine", "hbs");
 app.set("views", viewsPath);
 app.set('io', io);
 
+// Mastodon / Fediverse redirects
+app.get('/.well-known/webfinger', (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.redirect(301, `https://mastodon.bballdaniel3.com${req.originalUrl}`);
+});
+
+app.get('/.well-known/host-meta', (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.redirect(301, `https://mastodon.bballdaniel3.com${req.originalUrl}`);
+});
+
+app.get('/.well-known/nodeinfo', (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.redirect(301, `https://mastodon.bballdaniel3.com${req.originalUrl}`);
+});
+
+app.use(express.static(path.join(__dirname, "public")));
+
 io.on('connection', (socket) => {
     socket.on('join-room', (roomCode) => {
         socket.join(roomCode);
