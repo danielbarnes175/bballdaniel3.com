@@ -53,6 +53,8 @@
     flex-direction: column;
     gap: 1em;
     list-style: none;
+    padding-left: 0;
+    margin: 8px 0;
 }
 
 .guestbook-comment-card {
@@ -60,7 +62,6 @@
     border-radius: 8px;
     padding: 1em;
     box-shadow: var(--card-shadow);
-    margin: 1em 0;
     list-style: none;
     color: var(--text-color);
 }
