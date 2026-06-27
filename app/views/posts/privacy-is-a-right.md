@@ -3,7 +3,7 @@ title: "Privacy is a right"
 date: "2026-04-22"
 tags: ["general", "privacy"]
 ---
-When I was a freshman in college, I took an English course. As part of this, we had to do an analysis of Daniel Solove's "Nothing to Hide", argument. Eessentially we had to determine if it was a valid argument or not. What are the pros and cons? Where is he right, and where do people commonly push back? At the time, I didn't really have any skin in the game. I didn't really understand why people cared so much. And it was for a school assignment, so I just wanted to get through it with as little effort as possible.
+When I was a freshman in college, I took an English course. As part of this, we had to do an analysis of Daniel Solove's "Nothing to Hide", argument. Essentially we had to determine if it was a valid argument or not. What are the pros and cons? Where is he right, and where do people commonly push back? At the time, I didn't really have any skin in the game. I didn't really understand why people cared so much. And it was for a school assignment, so I just wanted to get through it with as little effort as possible.
 
 For those of you that don't know, the nothing to hide argument is essentially saying "why should you care about privacy if you have nothing to hide," and Solove provided numerous arguments against that. At its core, it's a discussion about privacy. And years after I first read his writings, it seems that the rise of surveillance is increasing day by day. More than ever, it seems pertinent to say: privacy is a right.
 
