@@ -1,0 +1,41 @@
+.collections-intro {
+    margin-bottom: 2rem;
+}
+
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+}
+
+.collection-card {
+    display: block;
+    padding: 1.5rem;
+    border-radius: 14px;
+    background: var(--bg-surface);
+    color: var(--text-color);
+    text-decoration: none;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.collection-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
+    text-decoration: none;
+}
+
+.collection-card h2 {
+    margin-top: 0;
+}
+
+.collection-card p {
+    color: var(--text-dim);
+}
+
+.collection-card span {
+    color: var(--link-color);
+    font-weight: bold;
+}

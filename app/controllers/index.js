@@ -12,6 +12,7 @@ module.exports = {
     },
     about: (req, res) => res.render("about"),
     blog: getBlog,
+    collections: (req, res) => res.render("collections"),
     post: getPost,
     tag: getTag,
     privacy: (req, res) => res.render("privacy"),
