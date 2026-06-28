@@ -3,7 +3,8 @@ footer {
     text-align: center;
     font-size: 1em;
     margin: 0;
-    margin-top: auto; /* Push footer to the bottom */
+    margin-top: auto;
+    /* Push footer to the bottom */
     color: rgb(190, 190, 190);
 }
 
@@ -19,5 +20,23 @@ footer a:hover {
 
 .footer-linebreak {
     margin: 20px 40% 0 40%;
-    border-bottom: 2px solid rgba(0,0,0,.09);
+    border-bottom: 2px solid rgba(0, 0, 0, .09);
+}
+
+.footer-theme-toggle {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+}
+
+@media only screen and (max-width: 680px) {
+    .footer-theme-toggle {
+        position: static;
+        display: block;
+        margin: 0.75rem auto 0;
+    }
 }
