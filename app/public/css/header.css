@@ -4,6 +4,7 @@
     z-index: 10;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
+    box-shadow: 0 2px 3px var(--border-color);
 }
 
 .navbar {
@@ -12,7 +13,6 @@
     justify-content: space-between;
     gap: 2rem;
     padding: 1rem 0;
-    box-shadow: 0 2px 3px var(--border-color);
 }
 
 .navbar-brand {
