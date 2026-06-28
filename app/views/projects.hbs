@@ -1,10 +1,17 @@
 <h1>Projects</h1>
+
+<p>Peruse my projects:</p>
+
 <div class="projects-list">
     {{#each projects}}
-    <div class="project-card">
-        <h2><a href="{{url}}" target="_blank">{{name}}</a></h2>
-        <p>{{description}}</p>
-        <p><strong>Language:</strong> {{language}}</p>
-    </div>
+    <a href="{{url}}" target="_blank" class="project-card">
+        <div>
+            <h2>{{name}}</h2>
+            <p>{{description}}</p>
+        </div>
+
+        <p class="project-language">{{language}}</p>
+        <span>View Project →</span>
+    </a>
     {{/each}}
 </div>

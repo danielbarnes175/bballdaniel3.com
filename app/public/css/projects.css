@@ -1,44 +1,47 @@
 /* Projects Page Styles */
 .projects-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.projects-list a:hover {
+    text-decoration: none;
 }
 
 .project-card {
-    background: var(--bg-surface);
+    display: block;
+    text-decoration: none;
     color: var(--text-color);
-    border-radius: 8px;
+
+    background: var(--bg-surface);
+    border-radius: 10px;
     box-shadow: var(--card-shadow);
-    padding: 1.5rem;
-    width: 320px;
-    transition: box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    padding: 1rem 1.15rem;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .project-card:hover {
+    transform: translateY(-3px);
     box-shadow: var(--card-hover-shadow);
 }
 
 .project-card h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.3rem;
+    margin: 0 0 0.35rem 0;
+    font-size: 1.05rem;
 }
 
 .project-card p {
-    margin: 0.3rem 0;
+    margin: 0 0 0.75rem 0;
     color: var(--text-color);
+    line-height: 1.35;
 }
 
-.project-card a {
-    color: var(--link-color);
-    text-decoration: none;
-}
-
-.project-card a:hover {
-    text-decoration: underline;
-    color: var(--link-hover);
+.project-language {
+    color: var(--text-dim);
+    opacity: 0.75;
+    font-size: 0.85rem;
+    font-weight: normal;
 }
