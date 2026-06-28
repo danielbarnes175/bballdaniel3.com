@@ -5,10 +5,13 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
     line-height: 1.4;
     color: var(--text-color);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 /* Color system via CSS variables */
@@ -71,10 +74,19 @@ body.dark-theme {
 }
 
 
-.main-background {
-    background: var(--bg-surface);
-    background-image: linear-gradient(var(--bg-gradient-start), var(--bg-gradient-end));
-    transition: background 0.6s ease, color 0.3s ease;
+html {
+    background: var(--bg-gradient-end);
+}
+
+body.main-background {
+    background: linear-gradient(var(--bg-gradient-start),
+            var(--bg-gradient-end)) fixed;
+    min-height: 100dvh;
+}
+
+main {
+    flex: 1;
+    padding: 20px;
 }
 
 @font-face {
