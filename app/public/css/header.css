@@ -2,7 +2,7 @@
 .site-header {
     position: relative;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-surface);
     backdrop-filter: blur(10px);
     box-shadow: 0 2px 3px var(--border-color);
 }

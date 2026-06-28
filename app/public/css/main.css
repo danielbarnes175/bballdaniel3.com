@@ -18,7 +18,7 @@ body {
 :root {
     --bg-gradient-start: #B1F8F2;
     --bg-gradient-end: #3D7068;
-    --bg-surface: #ffffff;
+    --bg-surface: #B1F8F2;
     --bg-alt: #f4f4f4;
     --text-color: #333333;
     --text-dim: #666666;
@@ -44,7 +44,7 @@ body {
 body.dark-theme {
     --bg-gradient-start: #0f2027;
     --bg-gradient-end: #203a43;
-    --bg-surface: #1e1f22;
+    --bg-surface: #0f2027;
     --bg-alt: #2a2c30;
     --text-color: #e4e6eb;
     --text-dim: #b0b3b8;
