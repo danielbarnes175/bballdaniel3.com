@@ -40,13 +40,6 @@
     text-underline-offset: 0.4rem;
 }
 
-.theme-toggle {
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    font-size: 1.2rem;
-}
-
 /* Mobile */
 @media only screen and (max-width: 700px) {
     .navbar {

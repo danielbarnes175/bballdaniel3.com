@@ -206,30 +206,19 @@ footer a:hover {
     background: var(--guestbook-btn-hover);
 }
 
-/* Navbar links */
-.navbar a {
-    color: var(--navbar-link);
-}
-
-.navbar a:hover {
-    color: var(--navbar-link-hover);
-}
-
 /* Theme toggle button */
 .theme-toggle {
-    background: none;
-    border: 1px solid var(--border-color);
     border-radius: 20px;
+    border: 1px solid var(--border-color);
     cursor: pointer;
     padding: 4px 10px;
     font-size: 0.9em;
     line-height: 1;
     color: var(--navbar-link);
-    transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .theme-toggle:hover {
-    background: var(--bg-alt);
+    background: var(--border-color);
     color: var(--navbar-link-hover);
 }
 
