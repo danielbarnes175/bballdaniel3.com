@@ -1,78 +1,69 @@
 /* Header */
-header {
-    font-size: 1em;
+.site-header {
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .navbar {
-    position: relative;
-    z-index: 10;
-    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1rem 0;
     box-shadow: 0 2px 3px var(--border-color);
 }
 
-.navbar-container {
-    display: flex;
-    flex-direction: row;
-    overflow: wrap;
-}
-
-.navbar-list {
-    flex: 50%;
-    float: right;
-    text-align: right;
-    list-style-type: none;
-    text-transform: uppercase;
+.navbar-brand {
     font-weight: 800;
-    margin-top: 30px;
+    text-transform: uppercase;
 }
 
-.navbar-list li,
-.navbar-list-logo li {
-    padding: 0px 20px 10px 30px;
-}
-
-.navbar-logo {
-    flex: 33%;
-    text-align: left;
-    padding-left: 0;
-    margin: 0px 0px 3px 0px;
-    margin-top: 30px;
-}
-
-.navbar-logo img {
-    width: 80px;
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 .navbar a {
-    text-decoration: none;
-    margin: 0 10px;
     color: var(--navbar-link);
-}
-
-.navbar a:hover {
-    color: var(--navbar-link-hover);
-    padding-bottom: 12px;
-    border-bottom: 3px solid rgb(208, 255, 0);
     text-decoration: none;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 
+.navbar a:hover,
+.navbar a:focus-visible {
+    color: var(--navbar-link-hover);
+    text-decoration: underline;
+    text-underline-offset: 0.4rem;
+}
 
-@media only screen and (max-width: 1250px) {
-    .navbar-container {
+.theme-toggle {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+}
+
+/* Mobile */
+@media only screen and (max-width: 700px) {
+    .navbar {
         flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
     }
 
-    .navbar-list {
-        flex: 100%;
-        float: center;
-        text-align: center;
-        padding-left: 0;
-        margin-top: 6px;
+    .navbar-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
     }
 }
 
 @media only screen and (max-width: 400px) {
-    .navbar-list {
-        font-size: 70%;
+    .navbar {
+        font-size: 0.85rem;
     }
 }
