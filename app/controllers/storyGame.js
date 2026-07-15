@@ -1,6 +1,7 @@
 const { renderMarkdown } = require('../helpers/sanitizeMarkdown');
 const { sendStoryGameToDiscord } = require('../helpers/sendToDiscord');
 const { convertToMedieval } = require('../helpers/convertToMedieval');
+const { getWritingPrompt } = require('../helpers/getWritingPrompt');
 
 const rooms = {}; // In-memory storage for now
 
@@ -434,16 +435,6 @@ module.exports = {
     },
 
     getWritingPrompt: (req, res) => {
-        let prompt = "";
-        // Generate a random writing prompt
-        const prompts = [
-            "Write about a time you overcame a challenge.",
-            "Describe your favorite place in detail.",
-            "What is your biggest dream and how do you plan to achieve it?",
-            "Write a letter to your future self.",
-            "If you could have dinner with any historical figure, who would it be and why?"
-        ];
-        prompt = prompts[Math.floor(Math.random() * prompts.length)];
-        res.json({ prompt });
+        res.json({ prompt: getWritingPrompt() });
     }
-}
+};
