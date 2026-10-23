@@ -28,6 +28,8 @@ module.exports = function (app) {
         .get(controller.tag);
     app.route('/privacy')
         .get(controller.privacy);
+    app.route('/politics')
+        .get(controller.politics);
     app.route('/projects')
         .get(controller.projects);
 

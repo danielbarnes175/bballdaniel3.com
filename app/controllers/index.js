@@ -2,6 +2,7 @@
 
 const guestbookController = require("./guestbook");
 const projectsController = require("./projects");
+const { getPolitics } = require("./politics");
 const { getBlog, getPost } = require("./blog");
 const { getTag } = require("./tags")
 
@@ -16,6 +17,7 @@ module.exports = {
     post: getPost,
     tag: getTag,
     privacy: (req, res) => res.render("privacy"),
+    politics: getPolitics,
     guestbook: (req, res) => {
         res.render("guestbook", { entries: guestbookController.getGuestbookEntries() });
     },

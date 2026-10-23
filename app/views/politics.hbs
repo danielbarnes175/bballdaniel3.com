@@ -1,0 +1,52 @@
+<article class="politics-page" aria-labelledby="politics-title">
+    <header class="politics-intro">
+        <p class="politics-eyebrow">Where I stand</p>
+        <h1 id="politics-title">Politics</h1>
+        <p class="politics-lede">
+            These are my current personal beliefs, not a party platform. I am still learning, and my views may
+            change as I encounter better evidence, new experiences, or stronger arguments. Each position shows
+            when I last reviewed it.
+        </p>
+    </header>
+
+    <nav class="politics-index" aria-label="Political belief categories">
+        <span class="politics-index-label">Jump to</span>
+        <div class="politics-index-links">
+            {{#each categories}}
+            <a href="#{{id}}">{{title}}</a>
+            {{/each}}
+        </div>
+    </nav>
+
+    <div class="politics-categories">
+        {{#each categories}}
+        <section class="politics-category" id="{{id}}" aria-labelledby="{{id}}-title">
+            <header class="politics-category-header">
+                <h2 id="{{id}}-title">{{title}}</h2>
+                {{#if introduction}}<p>{{introduction}}</p>{{/if}}
+            </header>
+
+            <div class="politics-beliefs">
+                {{#each beliefs}}
+                <details class="politics-belief" id="{{id}}">
+                    <summary>
+                        <span class="politics-belief-heading">
+                            <span class="politics-belief-title">{{title}}</span>
+                            <span class="politics-belief-takeaway">{{takeaway}}</span>
+                        </span>
+                        <span class="politics-disclosure" aria-hidden="true"></span>
+                    </summary>
+                    <div class="politics-belief-details">
+                        <p>{{details}}</p>
+                        <footer>
+                            <time datetime="{{reviewedDate}}">Reviewed {{reviewedLabel}}</time>
+                            <a class="politics-permalink" href="#{{id}}" aria-label="Permanent link to {{title}}">Link</a>
+                        </footer>
+                    </div>
+                </details>
+                {{/each}}
+            </div>
+        </section>
+        {{/each}}
+    </div>
+</article>
