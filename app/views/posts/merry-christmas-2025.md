@@ -1,5 +1,6 @@
 ---
 title: "Merry Christmas 2025"
+description: "A Christmas retrospective on a year of personal growth, technical projects, learning, and building this website."
 date: "2025-12-22"
 tags: ["general"]
 ---

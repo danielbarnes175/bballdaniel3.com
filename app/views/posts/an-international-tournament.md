@@ -1,5 +1,6 @@
 ---
 title: "An International Tournament"
+description: "Traveling to Denver with longtime teammates to compete at an international Team Fortress 2 LAN tournament."
 date: "2025-05-23"
 tags: ["general"]
 ---

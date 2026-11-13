@@ -2,9 +2,10 @@ const fs = require("fs").promises;
 const path = require("path");
 const { renderMarkdown } = require("../helpers/sanitizeMarkdown");
 const matter = require("gray-matter");
-const { getBlogList } = require("../helpers/getBlogList");
+const { getBlogList, getExcerpt } = require("../helpers/getBlogList");
 
 const postsPath = path.join(__dirname, "../views/posts");
+const siteUrl = "https://bballdaniel3.com";
 
 exports.getBlog = async (req, res) => {
     try {
@@ -26,9 +27,11 @@ exports.getPost = async (req, res) => {
 
         res.render("blogPost", {
             title: parsed.data.title || "Blog Post",
+            description: parsed.data.description || getExcerpt(parsed.content),
             date: parsed.data.date || "Unknown date",
             tags: parsed.data.tags || [],
             content,
+            canonicalUrl: `${siteUrl}/blog/${encodeURIComponent(req.params.post)}`,
             layout: "blog"
         });
     } catch (error) {

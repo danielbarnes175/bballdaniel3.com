@@ -58,4 +58,4 @@ async function getBlogList() {
     }
 }
 
-module.exports = { getBlogList };
+module.exports = { getBlogList, getExcerpt };

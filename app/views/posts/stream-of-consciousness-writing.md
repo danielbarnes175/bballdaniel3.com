@@ -1,5 +1,6 @@
 ---
 title: "Stream of Consciousness Writing"
+description: "Exploring stream-of-consciousness writing and how putting an unfiltered train of thought on the page can organize ideas."
 date: "2026-06-28"
 tags: ["general", "writing", "musings"]
 ---

@@ -1,5 +1,6 @@
 ---
 title: "Homelab Adventures"
+description: "How wanting one home server grew into an all-consuming homelab obsession and an ongoing technical adventure."
 date: "2025-08-19"
 tags: ["general", "homelab", "programming"]
 ---

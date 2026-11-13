@@ -1,5 +1,6 @@
 ---
 title: "This blog is for just that one Reader"
+description: "Why I created yet another blog, this time without expectations and with the freedom to write for one reader."
 date: "2025-02-06"
 tags: ["general"]
 ---

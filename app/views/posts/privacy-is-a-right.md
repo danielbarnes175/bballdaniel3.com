@@ -1,5 +1,6 @@
 ---
 title: "Privacy is a right"
+description: "Why privacy remains a fundamental right in a digital world where personal data is collected, shared, and exposed."
 date: "2026-04-22"
 tags: ["general", "privacy"]
 ---

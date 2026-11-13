@@ -1,5 +1,6 @@
 ---
 title: "An Airplane Ride"
+description: "Thoughts on writing, observation, and finding something worth saying while traveling 32,000 feet above the ground."
 date: "2025-05-22"
 tags: ["general", "musings"]
 ---

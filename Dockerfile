@@ -1,11 +1,11 @@
-FROM dhi.io/node:25-alpine3.22-dev AS build-stage
+FROM dhi.io/node:26-alpine3.23-dev AS build-stage
 WORKDIR /app
 ENV NODE_ENV=production
 
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-FROM dhi.io/node:25-alpine3.22 AS runtime-stage
+FROM dhi.io/node:26-alpine3.23 AS runtime-stage
 WORKDIR /app
 ENV NODE_ENV=production
 

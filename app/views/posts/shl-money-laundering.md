@@ -1,5 +1,6 @@
 ---
 title: "Is There A Secret Underground Money Laundering Scheme in the SHL?"
+description: "A fictional investigative report into a secret underground money-laundering scheme in the Simulation Hockey League."
 date: "2024-01-19"
 tags: ["fun", "shl"]
 ---
