@@ -59,6 +59,20 @@ app.set("view engine", "hbs");
 app.set("views", viewsPath);
 app.set('io', io);
 
+const vendorScripts = {
+    '/vendor/swup/swup.umd.js': 'swup/dist/Swup.umd.js',
+    '/vendor/swup/forms-plugin.umd.js': '@swup/forms-plugin/dist/index.umd.js',
+    '/vendor/swup/head-plugin.umd.js': '@swup/head-plugin/dist/index.umd.js',
+    '/vendor/swup/scroll-plugin.umd.js': '@swup/scroll-plugin/dist/index.umd.js',
+    '/vendor/swup/scripts-plugin.umd.js': '@swup/scripts-plugin/dist/index.umd.js'
+};
+for (const [route, modulePath] of Object.entries(vendorScripts)) {
+    app.get(route, (req, res) => {
+        res.set('Cache-Control', 'public, max-age=86400');
+        res.sendFile(path.join(__dirname, '..', 'node_modules', modulePath));
+    });
+}
+
 // Mastodon / Fediverse redirects
 app.get('/.well-known/webfinger', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');

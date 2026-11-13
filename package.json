@@ -13,6 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@swup/forms-plugin": "^3.6.0",
+    "@swup/head-plugin": "^2.3.1",
+    "@swup/scripts-plugin": "^2.1.0",
+    "@swup/scroll-plugin": "^4.0.0",
     "axios": "^1.9.0",
     "dompurify": "^3.1.6",
     "dotenv": "^18.0.9",
@@ -24,9 +28,10 @@
     "marked": "^18.1.1",
     "sanitize-html": "^2.16.0",
     "serve-favicon": "^2.5.1",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "swup": "^4.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.11"
   }
 }
