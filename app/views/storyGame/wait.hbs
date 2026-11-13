@@ -4,7 +4,7 @@
 <p class="story-meta">You will be redirected automatically. Please do not navigate away from this page.</p>
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
+<script nonce="{{cspNonce}}">
     const socket = io();
     const code = "{{code}}";
     socket.emit('join-room', code);

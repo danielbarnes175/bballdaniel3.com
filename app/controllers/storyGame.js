@@ -2,41 +2,93 @@ const { renderMarkdown } = require('../helpers/sanitizeMarkdown');
 const { sendStoryGameToDiscord } = require('../helpers/sendToDiscord');
 const { convertToMedieval } = require('../helpers/convertToMedieval');
 const { getWritingPrompt } = require('../helpers/getWritingPrompt');
+const {
+    getStoryToken,
+    normalizeName,
+    publicOrigin,
+    randomToken,
+    safeEqual,
+    setStoryToken
+} = require('../helpers/security');
+const crypto = require('crypto');
 
-const rooms = {}; // In-memory storage for now
+const rooms = Object.create(null); // Single-process ephemeral game state
+const MAX_PLAYERS = 12;
+const MAX_CONTENT_LENGTH = 20000;
+const MAX_PROMPT_LENGTH = 2000;
+const MAX_ROOMS = 1000;
+const ROOM_IDLE_TTL = 24 * 60 * 60 * 1000;
 
 // Periodic safety sweep: remove finished games older than 60 minutes
 const ONE_HOUR = 60 * 60 * 1000;
-const ONE_DAY = 24 * ONE_HOUR;
+function clearRoomTimers(room) {
+    for (const timer of ['turnTimer', 'readingPhaseTimer', 'cleanupTimeout', 'startDelayTimer']) {
+        if (room[timer]) clearTimeout(room[timer]);
+    }
+}
+
+function deleteRoom(code) {
+    const room = rooms[code];
+    if (room) clearRoomTimers(room);
+    delete rooms[code];
+}
+
 setInterval(() => {
     const now = Date.now();
     try {
         for (const [code, room] of Object.entries(rooms)) {
-            if (room && room.state === 'finished') {
-                const completedAt = room.completedAt || 0;
-                if (now - completedAt > ONE_HOUR) {
-                    if (room.cleanupTimeout) clearTimeout(room.cleanupTimeout);
-                    delete rooms[code];
-                }
-            }
+            if (!room) continue;
+            const expiredFinishedRoom = room.state === 'finished' && now - (room.completedAt || 0) > ONE_HOUR;
+            const expiredIdleRoom = now - (room.lastActivity || room.createdAt || 0) > ROOM_IDLE_TTL;
+            if (expiredFinishedRoom || expiredIdleRoom) deleteRoom(code);
         }
     } catch (e) {
         // Non-fatal; continue next sweep
         console.error('StoryGame cleanup sweep error:', e && e.message ? e.message : e);
     }
-}, ONE_DAY);
+}, 60 * 1000).unref();
+
+function findPlayerByToken(room, token) {
+    if (!room || !token) return null;
+    return room.players.find(player => safeEqual(player.token, token)) || null;
+}
+
+function getAuthenticatedPlayer(req, room, code) {
+    return findPlayerByToken(room, getStoryToken(req, code));
+}
+
+function generateRoomCode() {
+    let code;
+    do code = crypto.randomBytes(8).toString('hex').toUpperCase(); while (rooms[code]);
+    return code;
+}
+
+function publicRoom(room) {
+    return {
+        currentTurn: room.currentTurn,
+        host: room.host,
+        players: room.players.map(({ name }) => ({ name })),
+        settings: room.settings
+    };
+}
 
 function startTurn(room, code, io) {
+    if (room.state !== 'active' || room.currentTurn >= room.players.length) return;
     room.turnStartTime = Date.now();
-    room.submissions = {};
+    room.lastActivity = Date.now();
+    room.submissions = Object.create(null);
 
     io.to(code).emit('start-turn', {
         turn: room.currentTurn,
         endsIn: room.turnLength / 1000
     });
 
-    setTimeout(() => {
-        finishTurn(room, code, io);
+    const expectedTurn = room.currentTurn;
+    if (room.turnTimer) clearTimeout(room.turnTimer);
+    room.turnTimer = setTimeout(() => {
+        if (rooms[code] === room && room.state === 'active' && room.currentTurn === expectedTurn) {
+            finishTurn(room, code, io);
+        }
     }, room.turnLength + room.bufferTime);
 }
 
@@ -44,7 +96,7 @@ function finishTurn(room, code, io) {
     room.players.forEach((player, index) => {
         const storyIndex = (index + room.currentTurn) % room.players.length;
         const story = room.stories[storyIndex];
-        const submission = room.submissions[player.name] || story.content;
+        const submission = room.submissions[player.id] || story.content;
 
         story.content = submission;
         story.authors.push(player.name);
@@ -63,9 +115,9 @@ function finishTurn(room, code, io) {
     // Advance any players who missed submitting so their lastCompletedTurn isn't stale.
     const justFinishedTurn = room.currentTurn - 1;
     room.players.forEach(player => {
-        if (room.progress && typeof room.progress[player.name] === 'number') {
-            if (room.progress[player.name] < justFinishedTurn) {
-                room.progress[player.name] = justFinishedTurn;
+        if (room.progress && typeof room.progress[player.id] === 'number') {
+            if (room.progress[player.id] < justFinishedTurn) {
+                room.progress[player.id] = justFinishedTurn;
             }
         }
     });
@@ -74,7 +126,7 @@ function finishTurn(room, code, io) {
     if (room.settings.enableReadingPhase && room.currentTurn < room.players.length) {
         room.state = "reading";
         room.readingPhaseStartTime = Date.now();
-        room.readingVotes = {};
+        room.readingVotes = Object.create(null);
         io.to(code).emit("start-reading-phase", {
             turn: room.currentTurn,
             endsIn: room.settings.readingPhaseTime,
@@ -85,9 +137,10 @@ function finishTurn(room, code, io) {
         // Keep a reference so we can clear if everyone votes early
         if (room.readingPhaseTimer) clearTimeout(room.readingPhaseTimer);
         room.readingPhaseTimer = setTimeout(() => {
-            // End reading phase and start next turn
-            room.state = "active";
-            startTurn(room, code, io);
+            if (rooms[code] === room && room.state === 'reading') {
+                room.state = "active";
+                startTurn(room, code, io);
+            }
         }, room.settings.readingPhaseTime * 1000);
     } else if (room.currentTurn >= room.players.length) {
         room.state = "finished";
@@ -115,7 +168,7 @@ function finishTurn(room, code, io) {
             const current = rooms[code];
             // Only delete if the room still represents the same finished game
             if (current && current.state === 'finished' && current.completedAt === completionMarker) {
-                delete rooms[code];
+                deleteRoom(code);
             }
         }, ONE_HOUR);
 
@@ -124,7 +177,7 @@ function finishTurn(room, code, io) {
             sendStoryGameToDiscord({
                 code,
                 stories: room.stories,
-                players: room.players,
+                players: room.players.map(({ name }) => ({ name })),
                 keepHistory: room.settings.keepHistory
             });
         } catch (e) {
@@ -137,47 +190,63 @@ function finishTurn(room, code, io) {
 
 module.exports = {
     createRoom: (req, res) => {
-        const username = req.query.username;
+        const username = normalizeName(req.query.username);
 
         if (!username) {
             return res.render("storyGame/enterName", { startGame: true, layout: "storyGame" });
         }
+        if (Object.keys(rooms).length >= MAX_ROOMS) return res.status(503).send('No room capacity available');
 
-        const code = Math.random().toString(36).slice(2, 6).toUpperCase();
+        const code = generateRoomCode();
+        const hostToken = randomToken();
         rooms[code] = {
-            host: req.query.username || "Host",
+            host: username,
+            hostToken,
             settings: { turnTime: 60, keepHistory: false, enableReadingPhase: false, readingPhaseTime: 30 },
             players: [],
             stories: [],
-            state: "waiting"
+            state: "waiting",
+            createdAt: Date.now(),
+            lastActivity: Date.now()
         };
+        setStoryToken(res, code, hostToken, publicOrigin(req).startsWith('https://'));
         res.redirect(`/games/story/${code}?username=${encodeURIComponent(rooms[code].host)}`);
     },
 
     joinRoom: (req, res) => {
         const code = req.params.code.toUpperCase();
-        const username = req.query.username;
+        let username = normalizeName(req.query.username);
         const io = req.app.get('io');
         const room = rooms[code];
 
-        if (!room) return res.status(404).render('404');
+        if (!room || !/^[A-F0-9]{16}$/.test(code)) return res.status(404).render('404');
 
-        if (!username) {
+        const presentedToken = getStoryToken(req, code);
+        let player = findPlayerByToken(room, presentedToken);
+        if (player) username = player.name;
+
+        if (!username && !player) {
             if (room.state !== "waiting") {
                 return res.status(403).send("Game already started");
             }
             return res.render("storyGame/enterName", { code, layout: "storyGame" });
         }
 
-        const alreadyInRoom = room.players.some(p => p.name === username);
-
-        if (room.state !== "waiting" && !alreadyInRoom) {
+        if (room.state !== "waiting" && !player) {
             return res.status(403).send("Game already started");
         }
 
-        if (!alreadyInRoom) {
-            room.players.push({ name: username });
-            io.to(code).emit('player-joined', room.players);
+        if (!player) {
+            if (room.players.length >= MAX_PLAYERS) return res.status(409).send("Room is full");
+            if (room.players.some(p => p.name.toLowerCase() === username.toLowerCase())) {
+                return res.status(409).send("That name is already in use");
+            }
+            const token = safeEqual(presentedToken, room.hostToken) ? room.hostToken : randomToken();
+            player = { id: randomToken(12), name: username, token };
+            room.players.push(player);
+            setStoryToken(res, code, token, publicOrigin(req).startsWith('https://'));
+            room.lastActivity = Date.now();
+            io.to(code).emit('player-joined', room.players.map(({ name }) => ({ name })));
         }
 
         if (room.state === "active") {
@@ -189,12 +258,18 @@ module.exports = {
                 layout: "storyGame"
             });
         }
+        if (room.state === 'reading') {
+            return res.redirect(`/games/story/${code}/reading`);
+        }
+        if (room.state === 'finished') {
+            return res.redirect(`/games/story/${code}/results`);
+        }
 
         res.render("storyGame/lobby", {
             code,
-            room,
+            room: publicRoom(room),
             username,
-            joinUrl: `${req.protocol}://${req.get('host')}/games/story/${code}`,
+            joinUrl: `${publicOrigin(req)}/games/story/${code}`,
             layout: "storyGame"
         });
 
@@ -202,8 +277,9 @@ module.exports = {
 
     reading: (req, res) => {
         const code = req.params.code.toUpperCase();
-        const username = req.query.username;
         const room = rooms[code];
+        const participant = room && getAuthenticatedPlayer(req, room, code);
+        const username = participant ? participant.name : '';
 
         if (!room || room.state !== "reading") return res.status(404).render('404');
 
@@ -211,9 +287,10 @@ module.exports = {
         const elapsed = Math.floor((now - (room.readingPhaseStartTime || now)) / 1000);
         const timeLeft = Math.max(0, (room.settings.readingPhaseTime || 0) - elapsed);
         const voters = room.players.map(p => p.name);
-        const votes = Object.keys(room.readingVotes || {});
+        const votes = room.players.filter(p => room.readingVotes && room.readingVotes[p.id]).map(p => p.name);
         // Determine the next story this player will write for
-        const playerIndex = room.players.findIndex(p => p.name === username);
+        if (!participant) return res.status(403).send('Not a player');
+        const playerIndex = room.players.findIndex(p => p.id === participant.id);
         if (playerIndex === -1) return res.status(404).render('404');
         const storyIndex = (playerIndex + room.currentTurn) % room.players.length;
         const story = room.stories[storyIndex];
@@ -232,20 +309,21 @@ module.exports = {
 
     voteReadingPhase: (req, res) => {
         const code = req.params.code.toUpperCase();
-        const username = req.body.username;
         const room = rooms[code];
         const io = req.app.get('io');
 
         if (!room || room.state !== "reading") return res.status(404).send("No reading phase");
+        const player = getAuthenticatedPlayer(req, room, code);
+        if (!player) return res.status(403).send("Not a player");
 
-        if (!room.readingVotes) room.readingVotes = {};
-        room.readingVotes[username] = true;
+        if (!room.readingVotes) room.readingVotes = Object.create(null);
+        room.readingVotes[player.id] = true;
         const voters = room.players.map(p => p.name);
-        const votes = Object.keys(room.readingVotes);
+        const votes = room.players.filter(p => room.readingVotes[p.id]).map(p => p.name);
         io.to(code).emit("reading-phase-vote-update", { voters, votes });
 
         // End phase early if all have voted
-        if (votes.length === voters.length) {
+        if (room.players.every(p => room.readingVotes[p.id])) {
             if (room.readingPhaseTimer) clearTimeout(room.readingPhaseTimer);
             room.state = "active";
             startTurn(room, code, io);
@@ -259,35 +337,39 @@ module.exports = {
         const io = req.app.get('io');
         const room = rooms[code];
         if (!room) return res.status(404).render('404');
+        const token = getStoryToken(req, code);
+        if (!safeEqual(token, room.hostToken)) return res.status(403).send("Host authorization required");
+        if (room.state !== 'waiting') return res.status(409).send("Game already started");
+        if (room.players.length === 0) return res.status(409).send("At least one player is required");
 
         // Apply host settings
         room.settings.keepHistory = !!req.body.keepHistory;
         room.settings.enableReadingPhase = !!req.body.enableReadingPhase;
-        room.settings.readingPhaseTime = parseInt(req.body.readingPhaseTime) || 30;
+        room.settings.readingPhaseTime = Math.min(300, Math.max(5, parseInt(req.body.readingPhaseTime) || 30));
         room.settings.enableScotlandMode = !!req.body.enableScotlandMode;
         room.settings.enableMedievalMode = !!req.body.enableMedievalMode;
-        const startingPrompt = !!req.body.startingPromptEnabled ? req.body.startingPrompt : "";
+        const startingPrompt = !!req.body.startingPromptEnabled ? String(req.body.startingPrompt || '').slice(0, MAX_PROMPT_LENGTH) : "";
 
         // Init game state
         room.currentTurn = 0;
         room.bufferTime = 5000;
-        room.submissions = {};
+        room.submissions = Object.create(null);
         room.stories = room.players.map(p => ({ authors: [], content: startingPrompt, history: room.settings.keepHistory ? [] : undefined }));
         room.state = "active";
-        room.progress = {};
+        room.progress = Object.create(null);
 
         // lastCompletedTurn semantics: -1 means none completed yet; writable turn is lastCompletedTurn + 1
         room.players.forEach(player => {
-            room.progress[player.name] = -1;
+            room.progress[player.id] = -1;
         });
         room.turnStartTime = Date.now();
 
         const submittedTime = parseInt(req.body.turnTime);
-        const validatedTime = isNaN(submittedTime) || submittedTime < 10 ? 60 : submittedTime;
+        const validatedTime = isNaN(submittedTime) ? 60 : Math.min(600, Math.max(10, submittedTime));
         room.settings.turnTime = validatedTime;
         room.turnLength = room.settings.turnTime * 1000;
 
-        setTimeout(() => {
+        room.startDelayTimer = setTimeout(() => {
             startTurn(room, code, io);
         }, 1000);
 
@@ -298,23 +380,25 @@ module.exports = {
 
     writeTurn: (req, res) => {
         const code = req.params.code.toUpperCase();
-        const username = req.query.username;
         const requestedTurn = parseInt(req.query.turn);
 
         const room = rooms[code];
         if (!room || room.state !== "active") return res.status(404).render('404');
 
-        const playerIndex = room.players.findIndex(p => p.name === username);
+        const player = getAuthenticatedPlayer(req, room, code);
+        if (!player) return res.status(403).send('Not a player');
+        const username = player.name;
+        const playerIndex = room.players.findIndex(p => p.id === player.id);
         if (playerIndex === -1) return res.status(404).render('404');
 
-        const lastCompletedTurn = room.progress[username];
+        const lastCompletedTurn = room.progress[player.id];
         // If player somehow fell more than one turn behind, fast-forward them (missed submissions are auto-filled)
         if (lastCompletedTurn < room.currentTurn - 1) {
-            room.progress[username] = room.currentTurn - 1;
+            room.progress[player.id] = room.currentTurn - 1;
         }
 
         // After potential fast-forward
-        const authoritativeWritableTurn = room.progress[username] + 1;
+        const authoritativeWritableTurn = room.progress[player.id] + 1;
 
         // Writable turn must be the room.currentTurn; otherwise redirect to server authoritative URL
         if (authoritativeWritableTurn !== room.currentTurn) {
@@ -342,36 +426,44 @@ module.exports = {
             previousContent: story.content,
             timeLeft,
             layout: "storyGame",
-            room
+            room: publicRoom(room)
         });
     },
 
 
     submitTurn: (req, res) => {
-        const { code, turn, username, content } = req.body;
-        const room = rooms[code.toUpperCase()];
+        const code = req.params.code.toUpperCase();
+        const { turn, content } = req.body;
+        const room = rooms[code];
         if (!room || room.state !== "active") return res.status(404).render('404');
+        const player = getAuthenticatedPlayer(req, room, code);
+        if (!player) return res.status(403).send('Not a player');
+        if (typeof content !== 'string' || !content.trim() || content.length > MAX_CONTENT_LENGTH) {
+            return res.status(400).send('Story content must be between 1 and 20,000 characters');
+        }
 
         const currentTurn = room.currentTurn; // active turn index
         if (parseInt(turn) !== currentTurn) {
             return res.status(403).send("Wrong turn");
         }
 
-        room.submissions[username] = content;
-        room.progress[username] = currentTurn; // mark this turn as completed
+        room.submissions[player.id] = content;
+        room.progress[player.id] = currentTurn; // mark this turn as completed
+        room.lastActivity = Date.now();
 
         // Player gets a waiting screen
-        res.render("storyGame/wait", { code, turn: currentTurn, username, message: "Waiting for other players...", layout: "storyGame" });
+        res.render("storyGame/wait", { code, turn: currentTurn, username: player.name, message: "Waiting for other players...", layout: "storyGame" });
     },
 
     results: (req, res) => {
         const code = req.params.code.toUpperCase();
         const room = rooms[code];
         if (!room || room.state !== "finished") return res.status(404).render('404');
+        const player = getAuthenticatedPlayer(req, room, code);
 
         res.render("storyGame/results", {
             code,
-            username: req.query.username || '',
+            username: player ? player.name : '',
             stories: room.stories,
             keepHistory: room.settings.keepHistory,
             votes: room.resultVotes || room.stories.map(() => ({ likes: [], dislikes: [] })),
@@ -386,14 +478,14 @@ module.exports = {
         const io = req.app.get('io');
         if (!room || room.state !== "finished") return res.status(404).send("Voting unavailable");
 
-        const { username, storyIndex, voteType } = req.body || {};
+        const { storyIndex, voteType } = req.body || {};
+        const player = getAuthenticatedPlayer(req, room, code);
+        if (!player) return res.status(403).send("Not a player");
+        const username = player.name;
         const sIdx = parseInt(storyIndex);
-        if (!username || !Number.isInteger(sIdx) || sIdx < 0 || sIdx >= room.stories.length) {
+        if (!Number.isInteger(sIdx) || sIdx < 0 || sIdx >= room.stories.length) {
             return res.status(400).send("Bad request");
         }
-        // Must be a known player (prevents randoms)
-        const isPlayer = room.players.some(p => p.name === username);
-        if (!isPlayer) return res.status(403).send("Not a player");
 
         if (!room.resultVotes) {
             room.resultVotes = room.stories.map(() => ({ likes: [], dislikes: [] }));
@@ -436,5 +528,10 @@ module.exports = {
 
     getWritingPrompt: (req, res) => {
         res.json({ prompt: getWritingPrompt() });
+    },
+
+    canJoinSocketRoom: (code, token) => {
+        const room = rooms[String(code || '').toUpperCase()];
+        return Boolean(room && findPlayerByToken(room, token));
     }
 };

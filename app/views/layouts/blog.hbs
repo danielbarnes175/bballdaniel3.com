@@ -16,7 +16,7 @@
     {{#each tags}}
     <meta property="article:tag" content="{{this}}">
     {{/each}}
-    <script>
+    <script nonce="{{cspNonce}}">
         (function () {
             try {
                 var t = localStorage.getItem('site-theme');
@@ -36,12 +36,6 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/blog.css">
-    <script defer src="https://unpkg.com/swup@4"></script>
-    <script defer src="https://unpkg.com/@swup/forms-plugin@3"></script>
-    <script defer src="https://unpkg.com/@swup/head-plugin@2"></script>
-    <script defer src="https://unpkg.com/@swup/scroll-plugin@4"></script>
-    <script defer src="https://unpkg.com/@swup/scripts-plugin@2"></script>
-    <script defer type="module" src="/js/swup.js"></script>
     <script defer src="/js/theme.js"></script>
 </head>
 

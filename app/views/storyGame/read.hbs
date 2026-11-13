@@ -14,7 +14,7 @@
 <div class="resultsBox story-markdown story-content">{{{markdown nextContent}}}</div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
+<script nonce="{{cspNonce}}">
     const socket = io();
     const code = "{{code}}";
     const username = "{{username}}";

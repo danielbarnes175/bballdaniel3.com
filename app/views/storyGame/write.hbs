@@ -10,9 +10,9 @@
 </button>
 {{/if}}
 
-<form id="writeForm" onclick="playMusic({{room.settings.enableScotlandMode}})" action="/games/story/{{code}}/write"
+<form id="writeForm" action="/games/story/{{code}}/write"
     method="POST">
-    <textarea class="story-textarea" name="content" rows="12" required>{{previousContent}}</textarea>
+    <textarea class="story-textarea" name="content" rows="12" maxlength="20000" required>{{previousContent}}</textarea>
     <input type="hidden" name="code" value="{{code}}">
     <input type="hidden" name="turn" value="{{room.currentTurn}}">
     <input type="hidden" name="username" value="{{username}}">
@@ -24,7 +24,7 @@
 <audio id="bagpipe-audio" preload="auto">
     <source src="/audio/bagpipes.mp3" type="audio/mpeg">
 </audio>
-<script>
+<script nonce="{{cspNonce}}">
     const scotlandMode = {{ room.settings.enableScotlandMode }};
 
     if (scotlandMode) {
@@ -37,27 +37,15 @@
             bagpipeAudio.play();
         }
     }
+    document.getElementById('writeForm').addEventListener('click', () => playMusic(scotlandMode), { once: true });
 </script>
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
+<script nonce="{{cspNonce}}">
     const socket = io();
     const code = "{{code}}";
     const username = "{{username}}";
     socket.emit('join-room', code);
-    const easyMDE = new EasyMDE({
-        toolbar: ["bold", "italic", "|", "preview"],
-        status: ["lines", "words"],
-        spellChecker: false,
-        renderingConfig: {
-            sanitizerFunction: (renderedHTML) => {
-                return DOMPurify.sanitize(renderedHTML, {
-                    ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'p', 'br', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'blockquote'],
-                    ALLOWED_ATTR: []
-                });
-            }
-        }
-    });
     let time = {{ timeLeft }};
     const timerEl = document.getElementById('timer');
     const timerEl2 = document.getElementById('timer2');
@@ -85,7 +73,7 @@
         window.location.href = `/games/story/${code}/results`;
     });
 </script>
-<script>
+<script nonce="{{cspNonce}}">
     const generatePromptBtn = document.getElementById('generatePromptBtn');
 
     if (generatePromptBtn) {
@@ -93,7 +81,7 @@
             const response = await fetch('/api/getWritingPrompt');
             const data = await response.json();
 
-            easyMDE.value(data.prompt);
+            document.querySelector('.story-textarea').value = data.prompt;
         });
     }
 </script>

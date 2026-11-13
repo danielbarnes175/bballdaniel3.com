@@ -17,9 +17,9 @@ module.exports = {
             current_datetime.getSeconds();
 
         let method = req.method;
-        let url = req.url;
+        let url = req.path;
         let status = res.statusCode;
-        let ip = req.headers['x-forwarded-for']?.split(',').shift() || req.ip || req.connection?.remoteAddress;
+        let ip = req.ip || req.connection?.remoteAddress;
 
         let logMsg = `[${formatted_date}] (IP: ${ip}): ${status} ${method} ${url} `;
         console.log(logMsg);
@@ -37,7 +37,7 @@ module.exports = {
         if (process.env.DISCORD_REQUESTS_WEBHOOK_URL) {
             try {
                 if (url !== "/health") {
-                    await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
+                    await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log, { timeout: 5000 });
                 }
             } catch (error) {
                 console.error("Error exporting request log to Discord:", error);
@@ -46,7 +46,7 @@ module.exports = {
     },
     logError: async (error) => {
         // Discord Webhook Log
-        log = {
+        const log = {
             "embeds": [
                 {
                     "title": error.message,
@@ -58,7 +58,7 @@ module.exports = {
 
         if (process.env.DISCORD_REQUESTS_WEBHOOK_URL) {
             try {
-                await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log);
+                await axios.post(process.env.DISCORD_REQUESTS_WEBHOOK_URL, log, { timeout: 5000 });
             } catch (error) {
                 console.error("Error exporting error log to Discord:", error);
             }

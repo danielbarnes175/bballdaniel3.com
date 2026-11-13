@@ -7,12 +7,10 @@ function getWebhookUrl() {
 }
 
 async function sendToDiscord(entry) {
-    const webhookUrl = getWebhookUrl();
-
-    const content = `**New Guestbook Entry**\n**Name**: ${entry.name}\n**Date**: ${entry.date}\n**Message**:\n${entry.message}`;
-
     try {
-        await axios.post(webhookUrl, { content });
+        const webhookUrl = getWebhookUrl();
+        const content = `**New Guestbook Entry**\n**Name**: ${entry.name}\n**Date**: ${entry.date}\n**Message**:\n${entry.message}`;
+        await axios.post(webhookUrl, { content, allowed_mentions: { parse: [] } }, { timeout: 5000 });
     } catch (err) {
         console.error("Failed to send to Discord:", err.message);
     }
@@ -43,7 +41,12 @@ async function sendStoryGameToDiscord(payload) {
 
         // Header message
         const header = `Story Game Finished (Code: ${code})\nTotal stories: ${stories.length}`;
-        await axios.post(webhookUrl, { content: header });
+        const post = content => axios.post(
+            webhookUrl,
+            { content, allowed_mentions: { parse: [] } },
+            { timeout: 5000 }
+        );
+        await post(header);
 
         // Post each story separately to avoid hitting content limits
         for (let i = 0; i < stories.length; i++) {
@@ -57,16 +60,16 @@ async function sendStoryGameToDiscord(payload) {
             const parts = splitForDiscord(content, 1800);
 
             if (parts.length === 0) {
-                await axios.post(webhookUrl, { content: `**${title}**\n(No content)` });
+                await post(`**${title}**\n(No content)`);
                 continue;
             }
 
             // First chunk includes the title
-            await axios.post(webhookUrl, { content: `**${title}**\n${parts[0]}` });
+            await post(`**${title}**\n${parts[0]}`);
 
             // Remaining chunks as follow-ups
             for (let p = 1; p < parts.length; p++) {
-                await axios.post(webhookUrl, { content: parts[p] });
+                await post(parts[p]);
             }
         }
     } catch (err) {

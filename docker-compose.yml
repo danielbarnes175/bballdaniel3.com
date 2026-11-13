@@ -5,6 +5,8 @@ services:
       - "1234:1234"
     environment:
       NODE_ENV: production
+    env_file:
+      - ./app/.env
     volumes:
       - ./app/data:/app/app/data
     restart: unless-stopped

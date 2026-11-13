@@ -5,11 +5,14 @@ const favicon = require('serve-favicon');
 const Handlebars = require("handlebars");
 const helmet = require("helmet");
 const http = require('http');
+const crypto = require('crypto');
 const path = require("path");
 const socketio = require('socket.io');
 const helpers = require('./helpers/handlebars.js');
 const { logRequest } = require('./services/loggingService.js');
 const routes = require("./routes/index");
+const { getStoryToken } = require('./helpers/security');
+const { canJoinSocketRoom } = require('./controllers/storyGame');
 
 const app = express();
 const server = http.createServer(app);
@@ -17,20 +20,29 @@ const io = socketio(server);
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const viewsPath = path.join(__dirname, "views");
-const postsPath = path.join(viewsPath, "posts");
 
-// app.use(helmet({
-//     contentSecurityPolicy: {
-//         directives: {
-//             defaultSrc: ["'self'"],
-//             // Allow only external script hosts actually needed. Inline/event handlers removed.
-//             scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.socket.io", "https://unpkg.com"],
-//             connectSrc: ["'self'", "ws:", "wss:"],
-//             styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"], // keep unsafe-inline for styles (e.g., potential inline <style>)
-//             imgSrc: ["'self'", "data:"],
-//         }
-//     }
-// }));
+app.use((req, res, next) => {
+    res.locals.cspNonce = crypto.randomBytes(16).toString('base64');
+    next();
+});
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.cspNonce}'`],
+            scriptSrcAttr: ["'none'"],
+            connectSrc: ["'self'", "ws:", "wss:"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "https:"],
+            mediaSrc: ["'self'"],
+            objectSrc: ["'none'"],
+            baseUri: ["'self'"],
+            frameAncestors: ["'none'"],
+            upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null
+        }
+    },
+    crossOriginEmbedderPolicy: false
+}));
 
 app.engine("hbs", engine({
     extname: ".hbs",
@@ -39,8 +51,6 @@ app.engine("hbs", engine({
     partialsDir: path.join(__dirname, "views", "partials"),
     helpers
 }));
-app.engine("hbs", engine({ extname: ".hbs" }));
-
 Object.keys(helpers).forEach((key) => {
     Handlebars.registerHelper(key, helpers[key]);
 });
@@ -65,11 +75,10 @@ app.get('/.well-known/nodeinfo', (req, res) => {
     res.redirect(301, `https://mastodon.bballdaniel3.com${req.originalUrl}`);
 });
 
-app.use(express.static(path.join(__dirname, "public")));
-
 io.on('connection', (socket) => {
     socket.on('join-room', (roomCode) => {
-        socket.join(roomCode);
+        const code = String(roomCode || '').toUpperCase();
+        if (canJoinSocketRoom(code, getStoryToken(socket.request, code))) socket.join(code);
     });
 
     socket.on('disconnect', () => {
@@ -77,8 +86,8 @@ io.on('connection', (socket) => {
 });
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.json()); // For JSON body parsing
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '32kb' }));
+app.use(express.urlencoded({ extended: false, limit: '32kb' }));
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 // Logging middleware
@@ -91,5 +100,11 @@ app.use(function (req, res, next) {
 });
 
 routes(app);
+
+app.use((err, req, res, next) => {
+    console.error('Unhandled request error:', err && err.message ? err.message : err);
+    if (res.headersSent) return next(err);
+    res.status(err.status || 500).send(err.status === 413 ? 'Request too large' : 'Internal server error');
+});
 
 server.listen(1234, () => console.log("Server running on port 1234"));

@@ -5,6 +5,7 @@ const projectsController = require("./projects");
 const { getPolitics } = require("./politics");
 const { getBlog, getPost } = require("./blog");
 const { getTag } = require("./tags")
+const { issueCsrfToken } = require("../helpers/security");
 
 module.exports = {
     home: (req, res) => {
@@ -19,7 +20,10 @@ module.exports = {
     privacy: (req, res) => res.render("privacy"),
     politics: getPolitics,
     guestbook: (req, res) => {
-        res.render("guestbook", { entries: guestbookController.getGuestbookEntries() });
+        res.render("guestbook", {
+            csrfToken: issueCsrfToken(req, res),
+            entries: guestbookController.getGuestbookEntries()
+        });
     },
     submitGuestbookEntry: guestbookController.submitGuestbookEntry,
     now: (req, res) => res.render("now"),

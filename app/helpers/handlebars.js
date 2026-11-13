@@ -23,7 +23,10 @@ module.exports = {
     },
     JSONstringify: function (context) {
         try {
-            return JSON.stringify(context || []);
+            return JSON.stringify(context || [])
+                .replace(/</g, '\\u003c')
+                .replace(/\u2028/g, '\\u2028')
+                .replace(/\u2029/g, '\\u2029');
         } catch (e) {
             return '[]';
         }

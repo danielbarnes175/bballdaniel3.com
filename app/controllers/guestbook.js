@@ -11,6 +11,7 @@ const GUESTBOOK_FILE = path.join(__dirname, "..", "data", "guestbook.json");
 function getGuestbookEntries() {
     try {
         const rawEntries = JSON.parse(fs.readFileSync(GUESTBOOK_FILE, "utf8"));
+        if (!Array.isArray(rawEntries)) return [];
         const entries = rawEntries.map(entry => ({
             ...entry,
             color: nameToColor(entry.name)
@@ -23,10 +24,13 @@ function getGuestbookEntries() {
 }
 
 function saveGuestbookEntries(entries) {
-    fs.writeFileSync(GUESTBOOK_FILE, JSON.stringify(entries, null, 2));
+    const temporaryFile = `${GUESTBOOK_FILE}.${process.pid}.tmp`;
+    fs.writeFileSync(temporaryFile, JSON.stringify(entries.slice(0, 500), null, 2), { mode: 0o600 });
+    fs.renameSync(temporaryFile, GUESTBOOK_FILE);
 }
 
 function sanitize(input, maxLength) {
+    if (typeof input !== "string") return "";
     return sanitizeHtml(input.trim().slice(0, maxLength), {
         allowedTags: [],
         allowedAttributes: {}
@@ -47,7 +51,7 @@ exports.submitGuestbookEntry = (req, res) => {
         date: new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
     }
 
-    sendToDiscord(newEntry);
+    void sendToDiscord(newEntry);
 
     const entries = getGuestbookEntries();
     entries.unshift(newEntry);

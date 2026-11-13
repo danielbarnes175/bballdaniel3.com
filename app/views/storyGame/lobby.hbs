@@ -4,7 +4,7 @@
 <h3>Invite Players</h3>
 <p class="story-meta">
     Share this link to invite others:
-    <input id="lobby-link" type="text" value="{{{joinUrl}}}" readonly style="width: 100%; max-width: 500px;">
+    <input id="lobby-link" type="text" value="{{joinUrl}}" readonly style="width: 100%; max-width: 500px;">
 </p>
 
 <h2>Players</h2>
@@ -71,7 +71,7 @@
 {{/if}}
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
+<script nonce="{{cspNonce}}">
     const socket = io();
     const code = "{{code}}";
     const username = "{{username}}";
@@ -99,7 +99,7 @@
         window.location.href = `/games/story/${code}/results?username=${encodeURIComponent(username)}`;
     });
 </script>
-<script>
+<script nonce="{{cspNonce}}">
     document.addEventListener('DOMContentLoaded', () => {
         const checkbox = document.getElementById('startingPromptEnabled');
         const container = document.getElementById('startingPromptContainer');

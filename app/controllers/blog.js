@@ -19,7 +19,9 @@ exports.getBlog = async (req, res) => {
 
 exports.getPost = async (req, res) => {
     try {
-        const postFile = path.join(postsPath, `${req.params.post}.md`);
+        const slug = req.params.post;
+        if (!/^[a-z0-9-]+$/.test(slug)) return res.status(404).send("Post not found");
+        const postFile = path.join(postsPath, `${slug}.md`);
         const data = await fs.readFile(postFile, "utf8");
 
         const parsed = matter(data);

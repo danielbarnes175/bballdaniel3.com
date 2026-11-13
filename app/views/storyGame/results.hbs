@@ -118,7 +118,7 @@
 </div>
 
 {{#if keepHistory}}
-<script>
+<script nonce="{{cspNonce}}">
     document.querySelectorAll('.story-card').forEach(storyEl => {
         const historyScript = storyEl.querySelector('.story-history');
         if (!historyScript) return;
@@ -167,7 +167,7 @@
 </script>
 {{/if}}
 
-<script>
+<script nonce="{{cspNonce}}">
     // Carousel functionality
     (function () {
         const carouselWrapper = document.querySelector('.carousel-wrapper');
@@ -359,7 +359,7 @@
 </script>
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
+<script nonce="{{cspNonce}}">
     (function () {
         const code = "{{code}}";
         const username = "{{username}}";

@@ -5,14 +5,14 @@
 <p class="story-meta">Please enter your name to start this game:</p>
 <form action="/games/story/create" method="GET">
     <input type="hidden" name="code" value="{{code}}">
-    <input type="text" name="username" placeholder="Your name" required>
+    <input type="text" name="username" placeholder="Your name" maxlength="40" required>
     <button type="submit">Start Game</button>
 </form>
 {{else}}
 <p class="story-meta">Please enter your name to join this game:</p>
 <form action="/games/story/{{code}}" method="GET">
     <input type="hidden" name="code" value="{{code}}">
-    <input type="text" name="username" placeholder="Your name" required>
+    <input type="text" name="username" placeholder="Your name" maxlength="40" required>
     <button type="submit">Join Game</button>
 </form>
 {{/if}}
